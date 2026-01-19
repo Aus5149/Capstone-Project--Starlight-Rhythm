@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 import { Form, Button, Card } from "react-bootstrap"
 import { useNavigate } from 'react-router-dom';
 
@@ -23,18 +23,62 @@ const SignupPage = () => {
         }
     }
 
+    //BackGroundTransition component can be used here for background effects
+     const [currentIndex, setCurrentIndex] = useState(0);
+    
+      // Sample background images - you can replace these with your own
+      const backgrounds = [
+        'url("src/images/mock.png")',
+        'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+        'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+        'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+        'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+      ];
+    
+      // Auto-transition every 5 seconds
+      useEffect(() => {
+        const interval = setInterval(() => {
+          setCurrentIndex((prevIndex) => 
+            prevIndex === backgrounds.length - 1 ? 0 : prevIndex + 1
+          );
+        }, 5000);
+    
+        return () => clearInterval(interval);
+      }, [backgrounds.length]);
+    
 
     return(
 <>
+ <div style={{ position: 'relative', width: '100%', height: '100vh', overflow: 'hidden' }}>
+      {/* Background layers for smooth transition */}
+      {backgrounds.map((bg, index) => (
+        <div
+          key={index}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: bg,
+            opacity: index === currentIndex ? 1 : 0,
+            transition: 'opacity 2s ease-in-out',
+            zIndex: index === currentIndex ? 1 : 0,
+            backgroundSize: '100% 100%',
+          }}
+        />
+      ))}
+
 <div className="container d-flex align-items-center justify-content-center vh-100">
             <div className="text-center">
-                <div className="header-container">
-                   <h1 className="text-center my-4">Sign up to Starred Music</h1>
-                    
-                     <Card
+                          <Card
         className="p-4 shadow"
-        style={{ maxWidth: "400px", width: "100%", borderRadius: "1rem" }}
+        style={{ maxWidth: "400px", width: "100%", borderRadius: "1rem", zIndex: 10, background: 'linear-gradient(180deg, #a80062ff 50%, #ff005181 100%)'  }}
       >
+                <div className="header-container">
+                   <h1 className="text-center my-4">Create an account</h1>
+                </div>
+           
                     <Form onSubmit={handleSignup}>
           <Form.Group className="mb-3" controlId="email">
             <Form.Label>Email address</Form.Label>
@@ -65,14 +109,25 @@ const SignupPage = () => {
           <Button
             type="submit"
             className="register-button w-100 rounded-pill mt-3"
+            style={{background: "#a80062ff", border: "none"}}
           >
             Sign Up
           </Button>
         </Form>
+           <div className="text-center mt-3">
+          <small>
+            Already have an account?{" "}
+            <a href="/login" className="register-text">
+              Log in
+            </a>
+          </small>
+        </div>
                 </Card>    
+
                     
-                    </div>
+                    
             </div>
+        </div>
         </div>
 
 

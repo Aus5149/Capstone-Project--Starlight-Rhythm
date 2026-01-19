@@ -1,369 +1,400 @@
 import React, { useState } from 'react';
-import { Home, Search, Library, Heart, Music, Play, Pause, SkipForward, SkipBack, Volume2, User } from 'lucide-react';
 
-export default function SpotifyMainMenu() {
-  const [currentSong, setCurrentSong] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+const SpotifyProfile = () => {
+  const [activeSection, setActiveSection] = useState('explore');
+  const [playlists, setPlaylists] = useState([
+    'My Playlist #1',
+    'Favorites',
+    'Chill Vibes'
+  ]);
+  const [showModal, setShowModal] = useState(false);
+  const [newPlaylistName, setNewPlaylistName] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const songs = [
-    { id: 1, title: "Blinding Lights", artist: "The Weeknd", album: "After Hours", duration: "3:20", cover: "🎵" },
-    { id: 2, title: "Levitating", artist: "Dua Lipa", album: "Future Nostalgia", duration: "3:23", cover: "🎵" },
-    { id: 3, title: "Save Your Tears", artist: "The Weeknd", album: "After Hours", duration: "3:35", cover: "🎵" },
-    { id: 4, title: "Good 4 U", artist: "Olivia Rodrigo", album: "SOUR", duration: "2:58", cover: "🎵" },
-    { id: 5, title: "Heat Waves", artist: "Glass Animals", album: "Dreamland", duration: "3:58", cover: "🎵" },
-    { id: 6, title: "Stay", artist: "The Kid LAROI & Justin Bieber", album: "F*ck Love 3", duration: "2:21", cover: "🎵" },
-    { id: 7, title: "Peaches", artist: "Justin Bieber", album: "Justice", duration: "3:18", cover: "🎵" },
-    { id: 8, title: "Montero", artist: "Lil Nas X", album: "Montero", duration: "2:17", cover: "🎵" },
+  const musicData = [
+    { id: 1, title: 'Blinding Lights', artist: 'The Weeknd', album: 'After Hours', image: '🎵' },
+    { id: 2, title: 'Levitating', artist: 'Dua Lipa', album: 'Future Nostalgia', image: '🎵' },
+    { id: 3, title: 'Save Your Tears', artist: 'The Weeknd', album: 'After Hours', image: '🎵' },
+    { id: 4, title: 'Good 4 U', artist: 'Olivia Rodrigo', album: 'SOUR', image: '🎵' },
+    { id: 5, title: 'Stay', artist: 'The Kid LAROI, Justin Bieber', album: 'Stay', image: '🎵' },
+    { id: 6, title: 'Peaches', artist: 'Justin Bieber', album: 'Justice', image: '🎵' },
   ];
 
-  const handlePlaySong = (song) => {
-    setCurrentSong(song);
-    setIsPlaying(true);
+  const handleCreatePlaylist = () => {
+    if (newPlaylistName.trim()) {
+      setPlaylists([...playlists, newPlaylistName]);
+      setNewPlaylistName('');
+      setShowModal(false);
+    }
   };
 
-  const togglePlayPause = () => {
-    setIsPlaying(!isPlaying);
+  const handleLogout = () => {
+    alert('Logged out successfully!');
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      height: '100vh',
-      backgroundColor: '#000',
-      color: '#fff',
-      fontFamily: 'Arial, sans-serif'
-    }}>
-      {/* Sidebar */}
-      <div style={{
-        width: '240px',
-        backgroundColor: '#000',
-        padding: '24px',
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#121212' }}>
+      {/* Navbar */}
+      <nav style={{ 
+        backgroundColor: '#000', 
+        color: 'white', 
+        padding: '12px 24px',
         display: 'flex',
-        flexDirection: 'column',
-        gap: '24px'
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
       }}>
-        {/* Logo */}
-        <div style={{ marginBottom: '20px' }}>
-          <h2 style={{ color: '#1db954', margin: 0, fontSize: '24px', fontWeight: 'bold' }}>
-            🎵 Musicfy
-          </h2>
+        <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#1DB954' }}>
+          <span style={{ fontSize: '28px' }}>🎵</span> Spotify
+        </div>
+        
+        <div style={{ flex: '0 1 500px', margin: '0 20px' }}>
+          <input
+            type="search"
+            placeholder="Search for songs, artists, albums..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '10px 16px',
+              borderRadius: '20px',
+              border: '1px solid #333',
+              backgroundColor: '#282828',
+              color: 'white',
+              outline: 'none'
+            }}
+          />
         </div>
 
-        {/* Navigation Menu */}
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <button style={{
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            backgroundColor: '#333',
             display: 'flex',
             alignItems: 'center',
-            gap: '16px',
-            background: 'none',
-            border: 'none',
-            color: '#fff',
-            padding: '8px 0',
+            justifyContent: 'center',
             cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: '600'
+            fontSize: '20px'
           }}>
-            <Home size={24} />
-            Home
-          </button>
-          <button style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '16px',
-            background: 'none',
-            border: 'none',
-            color: '#b3b3b3',
-            padding: '8px 0',
-            cursor: 'pointer',
-            fontSize: '14px'
-          }}>
-            <Search size={24} />
-            Search
-          </button>
-          <button style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '16px',
-            background: 'none',
-            border: 'none',
-            color: '#b3b3b3',
-            padding: '8px 0',
-            cursor: 'pointer',
-            fontSize: '14px'
-          }}>
-            <Library size={24} />
-            Your Library
-          </button>
-        </nav>
-
-        <div style={{ height: '1px', backgroundColor: '#282828', margin: '8px 0' }}></div>
-
-        {/* Playlists */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <button style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '16px',
-            background: 'none',
-            border: 'none',
-            color: '#b3b3b3',
-            padding: '8px 0',
-            cursor: 'pointer',
-            fontSize: '14px'
-          }}>
-            <Heart size={20} />
-            Liked Songs
-          </button>
-          <div style={{ color: '#b3b3b3', fontSize: '13px', paddingLeft: '8px' }}>
-            <div style={{ padding: '8px 0', cursor: 'pointer' }}>My Playlist #1</div>
-            <div style={{ padding: '8px 0', cursor: 'pointer' }}>Chill Vibes</div>
-            <div style={{ padding: '8px 0', cursor: 'pointer' }}>Workout Mix</div>
+            👤
           </div>
+          <button 
+            onClick={handleLogout}
+            style={{
+              padding: '8px 20px',
+              borderRadius: '20px',
+              border: '1px solid white',
+              backgroundColor: 'transparent',
+              color: 'white',
+              cursor: 'pointer',
+              fontSize: '14px'
+            }}
+          >
+            Log Out
+          </button>
         </div>
-      </div>
+      </nav>
 
       {/* Main Content */}
-      <div style={{
-        flex: 1,
-        backgroundColor: '#121212',
-        overflowY: 'auto',
-        paddingBottom: '100px'
-      }}>
-        {/* Top Bar with Profile */}
+      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+        {/* Sidebar */}
         <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '16px 32px',
-          background: 'linear-gradient(rgba(0,0,0,0.6), rgba(18,18,18,1))',
-          position: 'sticky',
-          top: 0,
-          zIndex: 10
+          width: '250px',
+          backgroundColor: '#000',
+          color: 'white',
+          padding: '20px',
+          overflowY: 'auto'
         }}>
-          <div style={{ display: 'flex', gap: '16px' }}>
-            <button style={{
-              backgroundColor: 'rgba(0,0,0,0.7)',
-              border: 'none',
-              borderRadius: '50%',
-              width: '32px',
-              height: '32px',
+          <div 
+            onClick={() => setActiveSection('explore')}
+            style={{
+              padding: '12px 16px',
+              marginBottom: '8px',
+              borderRadius: '6px',
+              backgroundColor: activeSection === 'explore' ? '#282828' : 'transparent',
               cursor: 'pointer',
-              color: '#fff'
-            }}>←</button>
-            <button style={{
-              backgroundColor: 'rgba(0,0,0,0.7)',
-              border: 'none',
-              borderRadius: '50%',
-              width: '32px',
-              height: '32px',
+              transition: 'background-color 0.2s'
+            }}
+          >
+            <span style={{ marginRight: '12px' }}>🔍</span> Explore
+          </div>
+          
+          <div 
+            onClick={() => setActiveSection('library')}
+            style={{
+              padding: '12px 16px',
+              marginBottom: '24px',
+              borderRadius: '6px',
+              backgroundColor: activeSection === 'library' ? '#282828' : 'transparent',
               cursor: 'pointer',
-              color: '#fff'
-            }}>→</button>
+              transition: 'background-color 0.2s'
+            }}
+          >
+            <span style={{ marginRight: '12px' }}>📚</span> Your Library
           </div>
 
-          {/* Profile Section */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            backgroundColor: 'rgba(0,0,0,0.7)',
-            padding: '4px',
-            borderRadius: '23px',
-            cursor: 'pointer'
-          }}>
-            <div style={{
-              width: '28px',
-              height: '28px',
-              borderRadius: '50%',
-              backgroundColor: '#333',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <User size={16} />
-            </div>
-            <span style={{ fontSize: '14px', fontWeight: '600', paddingRight: '12px' }}>
-              John Doe
-            </span>
-          </div>
-        </div>
+          {activeSection === 'library' && (
+            <div>
+              <button 
+                onClick={() => setShowModal(true)}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  backgroundColor: '#1DB954',
+                  color: 'white',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  marginBottom: '20px'
+                }}
+              >
+                <span style={{ marginRight: '8px' }}>➕</span> Create Playlist
+              </button>
 
-        {/* Content Area */}
-        <div style={{ padding: '32px' }}>
-          <h1 style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '24px' }}>
-            Good evening
-          </h1>
+              <hr style={{ borderColor: '#333', margin: '20px 0' }} />
 
-          {/* Song List */}
-          <div>
-            <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '16px' }}>
-              Popular Songs
-            </h2>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {songs.map((song, index) => (
-                <div
-                  key={song.id}
-                  onClick={() => handlePlaySong(song)}
+              <h6 style={{ color: '#999', marginBottom: '16px', fontSize: '14px' }}>Your Playlists</h6>
+              {playlists.map((playlist, index) => (
+                <div 
+                  key={index}
                   style={{
-                    display: 'grid',
-                    gridTemplateColumns: '40px 1fr 200px 60px',
-                    alignItems: 'center',
-                    padding: '12px 16px',
+                    padding: '10px 12px',
+                    marginBottom: '4px',
                     borderRadius: '4px',
-                    backgroundColor: currentSong?.id === song.id ? '#2a2a2a' : 'transparent',
                     cursor: 'pointer',
                     transition: 'background-color 0.2s'
                   }}
-                  onMouseEnter={(e) => {
-                    if (currentSong?.id !== song.id) {
-                      e.currentTarget.style.backgroundColor = '#1a1a1a';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (currentSong?.id !== song.id) {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                    }
-                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#282828'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
-                  <span style={{ color: '#b3b3b3', fontSize: '14px' }}>{index + 1}</span>
-                  
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <div style={{
-                      width: '40px',
-                      height: '40px',
-                      backgroundColor: '#282828',
-                      borderRadius: '4px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '20px'
-                    }}>
-                      {song.cover}
-                    </div>
-                    <div>
-                      <div style={{ fontSize: '16px', fontWeight: '400', color: '#fff' }}>
-                        {song.title}
-                      </div>
-                      <div style={{ fontSize: '14px', color: '#b3b3b3' }}>
-                        {song.artist}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style={{ fontSize: '14px', color: '#b3b3b3' }}>
-                    {song.album}
-                  </div>
-
-                  <div style={{ fontSize: '14px', color: '#b3b3b3', textAlign: 'right' }}>
-                    {song.duration}
-                  </div>
+                  <span style={{ marginRight: '8px' }}>🎶</span> {playlist}
                 </div>
               ))}
             </div>
-          </div>
+          )}
+        </div>
+
+        {/* Main Content Area */}
+        <div style={{
+          flex: 1,
+          backgroundColor: '#181818',
+          color: 'white',
+          padding: '24px',
+          overflowY: 'auto'
+        }}>
+          {activeSection === 'explore' ? (
+            <>
+              <h2 style={{ marginBottom: '24px' }}>Explore Music</h2>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+                gap: '24px'
+              }}>
+                {musicData.map((song) => (
+                  <div 
+                    key={song.id}
+                    style={{
+                      backgroundColor: '#282828',
+                      borderRadius: '8px',
+                      padding: '16px',
+                      cursor: 'pointer',
+                      transition: 'transform 0.2s, background-color 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.02)';
+                      e.currentTarget.style.backgroundColor = '#333';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.backgroundColor = '#282828';
+                    }}
+                  >
+                    <div style={{
+                      height: '150px',
+                      backgroundColor: '#404040',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '60px',
+                      marginBottom: '16px'
+                    }}>
+                      {song.image}
+                    </div>
+                    <h5 style={{ marginBottom: '8px', fontSize: '16px', fontWeight: 'bold' }}>{song.title}</h5>
+                    <p style={{ color: '#999', fontSize: '14px', marginBottom: '4px' }}>{song.artist}</p>
+                    <p style={{ color: '#999', fontSize: '12px', marginBottom: '12px' }}>{song.album}</p>
+                    <button style={{
+                      width: '100%',
+                      padding: '10px',
+                      borderRadius: '20px',
+                      border: 'none',
+                      backgroundColor: '#1DB954',
+                      color: 'white',
+                      fontWeight: 'bold',
+                      cursor: 'pointer'
+                    }}>
+                      ▶ Play
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 style={{ marginBottom: '24px' }}>Your Library</h2>
+              {playlists.length > 0 ? (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+                  gap: '24px'
+                }}>
+                  {playlists.map((playlist, index) => (
+                    <div 
+                      key={index}
+                      style={{
+                        backgroundColor: '#282828',
+                        borderRadius: '8px',
+                        padding: '16px'
+                      }}
+                    >
+                      <div style={{
+                        height: '150px',
+                        backgroundColor: '#404040',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '60px',
+                        marginBottom: '16px'
+                      }}>
+                        🎶
+                      </div>
+                      <h5 style={{ marginBottom: '8px', fontSize: '16px', fontWeight: 'bold' }}>{playlist}</h5>
+                      <p style={{ color: '#999', fontSize: '14px', marginBottom: '12px' }}>0 songs</p>
+                      <button style={{
+                        width: '100%',
+                        padding: '10px',
+                        borderRadius: '20px',
+                        border: '1px solid #1DB954',
+                        backgroundColor: 'transparent',
+                        color: '#1DB954',
+                        fontWeight: 'bold',
+                        cursor: 'pointer'
+                      }}>
+                        Open Playlist
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', color: '#999', marginTop: '60px' }}>
+                  <h4>No playlists yet</h4>
+                  <p>Create your first playlist to get started!</p>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
 
-      {/* Bottom Player */}
-      {currentSong && (
+      {/* Create Playlist Modal */}
+      {showModal && (
         <div style={{
           position: 'fixed',
-          bottom: 0,
+          top: 0,
           left: 0,
           right: 0,
-          height: '90px',
-          backgroundColor: '#181818',
-          borderTop: '1px solid #282828',
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.8)',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 16px'
+          justifyContent: 'center',
+          zIndex: 1000
         }}>
-          {/* Currently Playing */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '30%' }}>
-            <div style={{
-              width: '56px',
-              height: '56px',
-              backgroundColor: '#282828',
-              borderRadius: '4px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '24px'
-            }}>
-              {currentSong.cover}
-            </div>
-            <div>
-              <div style={{ fontSize: '14px', fontWeight: '400' }}>{currentSong.title}</div>
-              <div style={{ fontSize: '12px', color: '#b3b3b3' }}>{currentSong.artist}</div>
-            </div>
-            <button style={{
-              background: 'none',
-              border: 'none',
-              color: '#b3b3b3',
-              cursor: 'pointer',
-              marginLeft: '8px'
-            }}>
-              <Heart size={16} />
-            </button>
-          </div>
-
-          {/* Playback Controls */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', width: '40%' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <button style={{
-                background: 'none',
-                border: 'none',
-                color: '#b3b3b3',
-                cursor: 'pointer'
-              }}>
-                <SkipBack size={20} />
-              </button>
-              <button
-                onClick={togglePlayPause}
+          <div style={{
+            backgroundColor: '#282828',
+            borderRadius: '12px',
+            padding: '24px',
+            width: '90%',
+            maxWidth: '500px',
+            color: 'white'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h3 style={{ margin: 0 }}>Create New Playlist</h3>
+              <button 
+                onClick={() => setShowModal(false)}
                 style={{
-                  backgroundColor: '#fff',
+                  background: 'none',
                   border: 'none',
-                  borderRadius: '50%',
-                  width: '32px',
-                  height: '32px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: '24px',
                   cursor: 'pointer'
                 }}
               >
-                {isPlaying ? <Pause size={16} fill="#000" color="#000" /> : <Play size={16} fill="#000" color="#000" />}
-              </button>
-              <button style={{
-                background: 'none',
-                border: 'none',
-                color: '#b3b3b3',
-                cursor: 'pointer'
-              }}>
-                <SkipForward size={20} />
+                ×
               </button>
             </div>
-            <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '11px', color: '#b3b3b3' }}>1:23</span>
-              <div style={{ flex: 1, height: '4px', backgroundColor: '#404040', borderRadius: '2px' }}>
-                <div style={{ width: '40%', height: '100%', backgroundColor: '#fff', borderRadius: '2px' }}></div>
-              </div>
-              <span style={{ fontSize: '11px', color: '#b3b3b3' }}>{currentSong.duration}</span>
+            
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px' }}>Playlist Name</label>
+              <input
+                type="text"
+                placeholder="Enter playlist name"
+                value={newPlaylistName}
+                onChange={(e) => setNewPlaylistName(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleCreatePlaylist()}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  borderRadius: '6px',
+                  border: '1px solid #444',
+                  backgroundColor: '#181818',
+                  color: 'white',
+                  fontSize: '16px',
+                  outline: 'none'
+                }}
+              />
             </div>
-          </div>
-
-          {/* Volume Control */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '30%', justifyContent: 'flex-end' }}>
-            <Volume2 size={20} color="#b3b3b3" />
-            <div style={{ width: '100px', height: '4px', backgroundColor: '#404040', borderRadius: '2px' }}>
-              <div style={{ width: '70%', height: '100%', backgroundColor: '#fff', borderRadius: '2px' }}></div>
+            
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+              <button 
+                onClick={() => setShowModal(false)}
+                style={{
+                  padding: '10px 24px',
+                  borderRadius: '20px',
+                  border: '1px solid #666',
+                  backgroundColor: 'transparent',
+                  color: 'white',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleCreatePlaylist}
+                disabled={!newPlaylistName.trim()}
+                style={{
+                  padding: '10px 24px',
+                  borderRadius: '20px',
+                  border: 'none',
+                  backgroundColor: newPlaylistName.trim() ? '#1DB954' : '#444',
+                  color: 'white',
+                  fontWeight: 'bold',
+                  cursor: newPlaylistName.trim() ? 'pointer' : 'not-allowed'
+                }}
+              >
+                Create
+              </button>
             </div>
           </div>
         </div>
       )}
     </div>
   );
-}
+};
 
+export default SpotifyProfile;

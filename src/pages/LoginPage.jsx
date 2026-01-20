@@ -14,7 +14,7 @@ const LoginPage = () => {
     const navigate = useNavigate()
 
      
-    const currentUser= useContext(AuthContext);
+    const currentUser = useContext(AuthContext);
 
     const handleLogout = () => {
         auth.signOut()
@@ -23,7 +23,10 @@ const LoginPage = () => {
     const handleLogin = async (e) =>{
     try{
         e.preventDefault();
-         signInWithEmailAndPassword(auth, email, password)
+         const test = await signInWithEmailAndPassword(auth, email, password)
+         console.log(test)
+         //check user exist in neon (get)
+         //post request to insert user data into neon
          navigate("/profile")
     } catch (error) {
         console.error(error);
@@ -33,16 +36,19 @@ const LoginPage = () => {
  
 }
 
-
+ useEffect(()=>{
+  if (currentUser){
+navigate('/profile')
+}}, [currentUser])
 
 //BackGroundTransition component can be used here for background effects
  const [currentIndex, setCurrentIndex] = useState(0);
 
   // Sample background images - you can replace these with your own
   const backgrounds = [
-    'url("src/images/mock.png")',
-    'url("src/images/Recovered_Album_2_Rework.png")',
-    'url("src/images/Whole_Album.png")',
+   // 'url("src/images/mock.png")',
+    //'url("src/images/Recovered_Album_2_Rework.png")',
+   // 'url("src/images/Whole_Album.png")',
     'linear-gradient(135deg, #430000ff 0%, #58000cff 100%)',
     'linear-gradient(135deg, #040075ff 0%, #001a78ff 100%)',
     'linear-gradient(135deg, #004316ff 0%, #075500ff 100%)',
@@ -176,7 +182,7 @@ const LoginPage = () => {
             ):(
             <button onClick={handleLogin}>Login</button>
             )}
-        </div>
+        </div> 
         </>
     )
 }

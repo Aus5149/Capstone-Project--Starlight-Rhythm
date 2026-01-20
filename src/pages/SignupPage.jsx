@@ -1,7 +1,10 @@
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
-import { useState, useEffect} from 'react';
+import { AuthContext } from '../context/authContext';
+import { useState, useEffect, useContext} from 'react';
 import { Form, Button, Card } from "react-bootstrap"
 import { useNavigate } from 'react-router-dom';
+import  Axios  from 'axios';
+import axios from 'axios';
 
 const SignupPage = () => {
     const auth = getAuth();
@@ -10,12 +13,20 @@ const SignupPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const currentUser = useContext(AuthContext);
+
+    const url = 'https://2024be56-7c75-4898-bba3-bb654ca8b38a-00-iglx0rrqz7e8.sisko.replit.dev'
+
+
     const handleSignup = async (e) => {
         try{
             e.preventDefault();
             const response = await createUserWithEmailAndPassword(auth, email, password);
+            
             if (response.user) {
-                navigate('/upload');
+                const entry = await axios.post(`${url}/signup`, {email, id: response.user.uid})
+                navigate('/profile');
+                console.log(entry.data)
             }
         }catch(error){
             setError(error.message)
@@ -28,7 +39,7 @@ const SignupPage = () => {
     
       // Sample background images - you can replace these with your own
       const backgrounds = [
-        'url("src/images/mock.png")',
+        //'url("src/images/mock.png")',
         'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
         'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
         'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
@@ -46,6 +57,10 @@ const SignupPage = () => {
         return () => clearInterval(interval);
       }, [backgrounds.length]);
     
+      useEffect(()=>{
+  if (currentUser){
+navigate('/profile')
+}}, [currentUser])
 
     return(
 <>
@@ -64,7 +79,9 @@ const SignupPage = () => {
             opacity: index === currentIndex ? 1 : 0,
             transition: 'opacity 2s ease-in-out',
             zIndex: index === currentIndex ? 1 : 0,
-            backgroundSize: '100% 100%',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
           }}
         />
       ))}

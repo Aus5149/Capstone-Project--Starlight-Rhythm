@@ -1,18 +1,24 @@
 
-import { useState, useEffect } from "react";
-import { auth } from "../firebase";
+import { useState, useEffect, useContext } from "react";
+import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { Container, InputGroup, FormControl, Button, Row, Card, CardBody } from "react-bootstrap";
-
+import { Container, InputGroup, FormControl, Button, Row, Card, CardBody, Image } from "react-bootstrap";
+import { AuthContext } from "../context/authContext";
 const CLIENT_ID = "ee89ebc6c60b482889ad000b20b14608"
 const CLIENT_SECRET = "3cfd4e2e837d4b07b610e2865f1d3099"
 
 const ProfilePage = () => {
-   
+    const auth = getAuth()
     const [searchQuery, setSearchQuery] = useState('');
     const [accessToken, setAccessToken] = useState(''); 
     const [songs, setSongs] = useState([]);
 
+
+     const currentUser = useContext(AuthContext);
+    
+       
+    
+    
     useEffect(() => {
         // API access token
          var authParameters = {
@@ -54,7 +60,7 @@ const ProfilePage = () => {
     var songs = await fetch("https://api.spotify.com/v1/artists/" + artistID + "/top-tracks" + '?include_groups=album&market=US&limit=50', searchParameters)
     .then(response => response.json())
     .then(data => {console.log(data); setSongs(data.tracks);})
-
+     
 
     }
     const navigate = useNavigate();
@@ -63,9 +69,14 @@ const ProfilePage = () => {
         navigate("/login");
     }
 
+    useEffect(()=>{
+ if (!currentUser){
+navigate('/login')
+}}, [currentUser])
+
     return(
         <>
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#121212' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight:"100vh", backgroundColor: '#121212' }}>
       {/* Navbar */}
       <nav style={{ 
         backgroundColor: '#000', 
@@ -137,17 +148,21 @@ const ProfilePage = () => {
 
  {/* Web */}
 
+ {/* old layer */}
+
       <Container>
-        <Row className="mx-2 row row-cols-6">
+        <Row  className="mx-2 row row-cols-1">
             {songs.map((songs) => {
                 console.log(songs);
                 return (
-   <Card>
-        <Card.Img src={songs.album.images[0].url}/>
+   <div key={songs.id}>
+    <Card className="my-1">
+        <Image src={songs.album.images[0].url} rounded className="me-3-shrink-0" style={{width: "56px", height: "56px", objectFit: "cover"}}/>
         <Card.Body>
-          <Card.Title>{songs.name}</Card.Title>
+         <Card.Title>{songs.name}</Card.Title>
           </Card.Body>
        </Card>
+   </div>
                 )
             })}
         </Row>

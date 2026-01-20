@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { storage } from "../firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../context/authContext";
+import { useNavigate } from "react-router-dom";
 
 const UploadImage = () => {
   const [file, setFile] = useState();
@@ -11,6 +12,8 @@ const UploadImage = () => {
   const [error, setError] = useState(null);
 
   const [isLoading, setLoading] = useState(false);
+
+  const navigate = useNavigate()
 
   const uploadImage = async () => {
     try {
@@ -29,6 +32,12 @@ const UploadImage = () => {
       setLoading(false);
     }
   };
+
+//  useEffect(()=>{
+//       if (!currentUser){
+//      navigate('/login')
+//      }},[currentUser])
+   
 
   return (
     <div className="flex flex-col gap-3 max-w-52">

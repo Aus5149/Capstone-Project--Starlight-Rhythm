@@ -24,7 +24,7 @@ const LoginPage = () => {
     try{
         e.preventDefault();
          const test = await signInWithEmailAndPassword(auth, email, password)
-         console.log(test)
+         // setCurrentUser(test.user.uid)
          //check user exist in neon (get)
          //post request to insert user data into neon
          navigate("/profile")
@@ -38,8 +38,9 @@ const LoginPage = () => {
 
  useEffect(()=>{
   if (currentUser){
-navigate('/profile')
+ navigate('/profile')
 }}, [currentUser])
+ 
 
 //BackGroundTransition component can be used here for background effects
  const [currentIndex, setCurrentIndex] = useState(0);

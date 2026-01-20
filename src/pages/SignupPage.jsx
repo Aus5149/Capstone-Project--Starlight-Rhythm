@@ -57,10 +57,10 @@ const SignupPage = () => {
         return () => clearInterval(interval);
       }, [backgrounds.length]);
     
-      useEffect(()=>{
+       useEffect(()=>{
   if (currentUser){
-navigate('/profile')
-}}, [currentUser])
+ navigate('/profile')
+ }},[currentUser])
 
     return(
 <>

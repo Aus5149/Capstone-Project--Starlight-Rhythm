@@ -2,7 +2,7 @@
 import { useState, useEffect, useContext } from "react";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { Container, InputGroup, FormControl, Button, Row, Card, CardBody, Image } from "react-bootstrap";
+import { Container, InputGroup, FormControl, Button, Row, Card, CardBody, Image, Offcanvas, Nav} from "react-bootstrap";
 import { AuthContext } from "../context/authContext";
 const CLIENT_ID = "ee89ebc6c60b482889ad000b20b14608"
 const CLIENT_SECRET = "3cfd4e2e837d4b07b610e2865f1d3099"
@@ -14,7 +14,16 @@ const ProfilePage = () => {
     const [songs, setSongs] = useState([]);
 
 
+
+
      const currentUser = useContext(AuthContext);
+     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+     const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleClose = () => setIsSidebarOpen(false);
     
        
     
@@ -70,9 +79,10 @@ const ProfilePage = () => {
     }
 
     useEffect(()=>{
- if (!currentUser){
-navigate('/login')
-}}, [currentUser])
+      if (!currentUser){
+     navigate('/login')
+     }},[currentUser])
+   
 
     return(
         <>
@@ -88,9 +98,23 @@ navigate('/login')
         boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
       }}>
         <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#1DB954' }}>
-          <span style={{ fontSize: '28px' }}>🎵</span> Spotify
+          <span style={{ fontSize: '28px' }}></span> Starlight Rhythm
         </div>
-        
+        {/* Menu Button */}
+         <Button
+                    variant="link"
+                    onClick={toggleSidebar}
+                    style={{
+                      color: 'white',
+                      textDecoration: 'none',
+                      padding: '8px',
+                      marginRight: '1px'
+                    }}
+                    aria-label="Toggle menu"
+                  >
+                    <i className="bi bi-list" style={{ fontSize: '28px' }}></i>
+                  </Button>
+
         <div style={{ flex: '0 1 500px', margin: '0 20px' }}>
           <input
             type="search"
@@ -128,21 +152,106 @@ navigate('/login')
           }}>
             👤
           </div>
-          <button 
-            onClick={handleLogout}
-            style={{
-              padding: '8px 20px',
-              borderRadius: '20px',
-              border: '1px solid white',
-              backgroundColor: 'transparent',
-              color: 'white',
-              cursor: 'pointer',
-              fontSize: '14px'
-            }}
-          >
-            Log Out
-          </button>
         </div>
+
+         {/* Bootstrap Offcanvas Sidebar */}
+        <Offcanvas 
+          show={isSidebarOpen} 
+          onHide={handleClose}
+          placement="start"
+          style={{
+            backgroundColor: '#000',
+            color: 'white'
+          }}
+        >
+          <Offcanvas.Header 
+            closeButton 
+            closeVariant="white"
+            style={{ borderBottom: '1px solid #282828' }}
+          >
+            <Offcanvas.Title style={{ color: '#1DB954', fontWeight: 'bold' }}>
+              <span style={{ fontSize: '24px' }}>🎵</span> Menu
+            </Offcanvas.Title>
+          </Offcanvas.Header>
+          
+          <Offcanvas.Body className="p-0">
+            <Nav className="flex-column">
+              {/* Explore */}
+              <Nav.Link
+                onClick={() => {
+                    navigate("/profile")
+                  console.log('Navigate to Explore');
+                  handleClose();
+                }}
+                className="text-white px-4 py-3"
+                style={{
+                  fontSize: '16px',
+                  transition: 'background-color 0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#282828'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+              >
+                <i className="bi bi-compass me-3" style={{ fontSize: '20px' }}></i>
+                Explore
+              </Nav.Link>
+
+              {/* Library */}
+              <Nav.Link
+                onClick={() => {
+                    navigate("/library")
+                  console.log('Navigate to Library');
+                  handleClose();
+                }}
+                className="text-white px-4 py-3"
+                style={{
+                  fontSize: '16px',
+                  transition: 'background-color 0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#282828'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+              >
+                <i className="bi bi-collection me-3" style={{ fontSize: '20px' }}></i>
+                Library
+              </Nav.Link>
+
+              <hr className="mx-4 my-3" style={{ borderColor: '#282828' }} />
+
+              {/* Log Out */}
+              <Nav.Link
+                onClick={() => {
+                  handleLogout();
+                  handleClose();
+                }}
+                className="px-4 py-3"
+                style={{
+                  fontSize: '16px',
+                  color: '#ff4444',
+                  transition: 'background-color 0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#282828'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+              >
+                <i className="bi bi-box-arrow-right me-3" style={{ fontSize: '20px' }}></i>
+                Log Out
+              </Nav.Link>
+            </Nav>
+
+            {/* Footer */}
+            <div 
+              className="mt-auto px-4 py-3"
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                width: '100%',
+                borderTop: '1px solid #282828',
+                fontSize: '12px',
+                color: '#b3b3b3'
+              }}
+            >
+              <p className="mb-0">© 2024 Spotify Clone</p>
+            </div>
+          </Offcanvas.Body>
+        </Offcanvas>
       </nav>
 
 

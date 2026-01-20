@@ -7,6 +7,7 @@ export function AuthContextProvider({ children }) {
 
     useEffect(() => {
        auth.onAuthStateChanged((user) => {
+    
         setCurrentUser(user);
        });
     }, []);

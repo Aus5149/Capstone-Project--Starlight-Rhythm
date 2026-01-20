@@ -10,7 +10,10 @@ import { AuthContextProvider } from './context/AuthProvider'
 import Uploadload from './pages/UploadImage'
 import MainProfilePage from './pages/MainProfilePage'
 import BackgroundTransition from './pages/BackgroundImageTest'
-import { Library } from 'lucide-react'
+import LibraryPage from './pages/LibraryPage'
+import SidebarTest from './pages/SidebarTest'
+
+
 
 function App() {
  
@@ -27,10 +30,11 @@ function App() {
         <Route path='/signup' element={<SignupPage />} />
         <Route path="/upload" element={<Uploadload />} />
         <Route path="/background" element={<BackgroundTransition />} />
-        <Route path="/library" element={<Library />} />
+        <Route path="/library" element={<LibraryPage />} />
+        <Route path="/sidebar" element={<SidebarTest />} />
         
         
-        <Route path="*" element={<MainMenuPage />} />
+        <Route path="*" element={<BackgroundTransition />} />
       </Routes>
     </BrowserRouter>
      </AuthContextProvider>

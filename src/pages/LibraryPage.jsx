@@ -120,9 +120,12 @@ const Posts = () => {
   }, [currentUser]);
 
   useEffect(() => {
-    if (!currentUser) {
-      navigate("/login");
-    }
+    const timeout = setTimeout(() => {
+      if (!currentUser) {
+        navigate("/login");
+      }
+    }, 1000);
+    return clearTimeout(timeout);
   }, [currentUser]);
 
   return (

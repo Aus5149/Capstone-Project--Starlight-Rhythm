@@ -47,7 +47,7 @@ const LoginPage = () => {
 
   // Sample background images - you can replace these with your own
   const backgrounds = [
-   // 'url("src/images/mock.png")',
+    'url("https://firebasestorage.googleapis.com/v0/b/sample-firebase-ai-app-fdc98.firebasestorage.app/o/posts%2Fr7eQXmwdXGTxSCMgCEVY61ymGX23%2FScreenshot%202025-12-15%20164836.png?alt=media&token=60f063b4-1591-4070-a4af-96b95b06f5a2")',
     //'url("src/images/Recovered_Album_2_Rework.png")',
    // 'url("src/images/Whole_Album.png")',
     'linear-gradient(135deg, #430000ff 0%, #58000cff 100%)',

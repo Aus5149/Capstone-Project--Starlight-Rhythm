@@ -25,6 +25,7 @@ const UploadImage = () => {
       const response = await uploadBytes(savePoint, file);
       // 3. Get the download url after uploading
       const imageUrl = await getDownloadURL(response.ref);
+      console.log(imageUrl)
       setImgUrl(imageUrl);
     } catch (error) {
       setError(error.message);

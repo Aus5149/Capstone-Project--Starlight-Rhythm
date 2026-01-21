@@ -1,127 +1,144 @@
-import { useEffect, useState, useContext } from "react"
-import { useNavigate } from "react-router-dom"
-import { AuthContext } from "../context/authContext"
-import { Container, Row,Col, Card, Image, Modal, Form, Button } from "react-bootstrap"
+import { useEffect, useState, useContext } from "react";
+import { storage } from "../firebase";
+import { useNavigate } from "react-router-dom";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { AuthContext } from "../context/authContext";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Image,
+  Modal,
+  Form,
+  Button,
+} from "react-bootstrap";
 const Posts = () => {
-    const [posts, setPosts] = useState([])
-    const [title, setTitle] = useState("")
-    const [description, setDescription] = useState("")
-      const [file, setFile] = useState();
-       const [imgUrl, setImgUrl] = useState()
-   // const [authToken] = useLocalStorage("authToken", "")
-   const [showCreateModal, setShowCreateModal] = useState(false);
-   
-  
+  const [posts, setPosts] = useState([]);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [file, setFile] = useState();
 
-   const navigate = useNavigate()
-    const currentUser = useContext(AuthContext);
-    console.log(posts)
+  const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  // const [authToken] = useLocalStorage("authToken", "")
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [updatePlaylist, setUpdatePlaylist] = useState(null);
 
-//    function getUserId(){
- 
-//     const data = jwtDecode(authToken)       
+  const navigate = useNavigate();
+  const { currentUser } = useContext(AuthContext);
+  console.log(posts);
 
-//     return data.id
-//    }
+  //    function getUserId(){
 
+  //     const data = jwtDecode(authToken)
 
-    const API_URL = "https://2024be56-7c75-4898-bba3-bb654ca8b38a-00-iglx0rrqz7e8.sisko.replit.dev"
+  //     return data.id
+  //    }
 
-    async function fetchPosts() {
-        const userId = currentUser.uid
-        const res = await fetch(`${API_URL}/playlist/user/${userId}`)
-        const data = await res.json()
-        console.log(data)
-        setPosts(data)
+  const API_URL =
+    "https://2024be56-7c75-4898-bba3-bb654ca8b38a-00-iglx0rrqz7e8.sisko.replit.dev";
+
+  async function fetchPosts() {
+    const userId = currentUser.uid;
+    const res = await fetch(`${API_URL}/playlist/user/${userId}`);
+    const data = await res.json();
+    console.log(data);
+    setPosts(data);
+  }
+
+  async function createBook() {
+    setLoading(true);
+    // 1. We want to define where are we saving?
+    // Reference Point to the storage
+    const savePoint = ref(storage, `posts/${currentUser.uid}/${file.name}`);
+    // 2. Upload the file to the point we want to save.
+    const response1 = await uploadBytes(savePoint, file);
+    // 3. Get the download url after uploading
+    const imageUrl = await getDownloadURL(response1.ref);
+
+    const userId = currentUser.uid;
+    const response = await fetch(`${API_URL}/playlist`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        description,
+        image: imageUrl,
+        user_id: userId,
+      }),
+    });
+
+    console.log("Created");
+    setTitle("");
+    setDescription("");
+    setFile(null);
+    const data = await response.json();
+    setPosts((prev) => [...prev, data]);
+    setLoading(false);
+  }
+
+  async function DeleteBook(postId) {
+    const response = await fetch(`${API_URL}/playlist/${postId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    setPosts(posts.filter((post) => post.id !== postId));
+    console.log(`delete ${postId}`);
+  }
+
+  async function UpdateBook(postId) {
+    // a button that will change the specific post title and content
+    const res = await fetch(`${API_URL}/playlist`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: title,
+        description: description,
+        post_id: postId.id,
+      }),
+    });
+    console.log(title);
+    console.log(description);
+    console.log(postId.id);
+    const data = await res.json();
+    setPosts(posts.map((post) => (post.id === postId.id ? data : post)));
+    console.log(res);
+    //const data = await response.json()
+    console.log(`Update ${postId}`);
+  }
+
+  useEffect(() => {
+    fetchPosts();
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/login");
     }
+  }, [currentUser]);
 
-    async function createBook(){
-        const userId = currentUser.uid
-        const response = await fetch(`${API_URL}/playlist`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({title, description, user_id: userId})
-
-        })
-        console.log("Created")
-        setTitle("")
-        setDescription("")
-        const data = await response.json()
-        setPosts((prev) => [...prev, data])
-
-        
-    }
-
-     async function DeleteBook(postId){
-     const response = await fetch(`${API_URL}/playlist/${postId}`, {
-            method: "DELETE",
-            headers: {
-                
-                "Content-Type": "application/json"
-            },
-
-        })
-       setPosts(posts.filter(post => post.id !== postId))
-        console.log(`delete ${postId}`)
-      
-     }
-
-     async function UpdateBook(postId){
-        const newTitle = prompt("Do you want to edit the title of this post?")
-      console.log(newTitle)
-        const newDescription = prompt("Do you want to edit the content of this post?")
-      console.log(newDescription)
-
-      
-        // a button that will change the specific post title and content
-        const res = await fetch(`${API_URL}/playlist`, {
-            method: "PUT",
-            headers: {
-              
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({title: newTitle, description: newDescription, post_id: postId})
-
-        })
-        const data = await res.json()
-         setPosts(posts.map(post => post.id === postId ? data: post))
-        console.log(res)
-        //const data = await response.json()
-        console.log(`Update ${postId}`)
-
-     }
-
-
-
-     
-  useEffect(() =>{
-    fetchPosts()
-  }, [currentUser])
- 
-  
-
-
-    return(
-<>
-
-  
-                
-             
-
-<div className="d-flex align-items-center gap-3 py-2">
-          <h3 className="mb-0">Your Playlists</h3>
-          <Button
-            className="rounded-pill"
-            variant="outline-light"
-            size="sm"
-            onClick={() => setShowCreateModal(true)}
-          >
-            + Create
-          </Button>
-        </div>
-{/*
+  return (
+    <>
+      <div className="d-flex align-items-center gap-3 py-2">
+        <h3 className="mb-0">Your Playlists</h3>
+        <Button
+          className="rounded-pill"
+          variant="outline-light"
+          size="sm"
+          onClick={() => setShowCreateModal(true)}
+        >
+          + Create
+        </Button>
+      </div>
+      {/*
         <div className="d-flex flex-column align-items-center my-5" style={{backgroundColor: "papayawhip"}} >
          <h1 className="my-5" style={{fontSize:50, fontFamily: "fantasy"}}>Book your tables!</h1>
          <br/>
@@ -151,7 +168,7 @@ const Posts = () => {
          
        </div>
  */}
-  {/* Modal */}
+      {/* Modal */}
       <Modal
         show={showCreateModal}
         onHide={() => setShowCreateModal(false)}
@@ -183,7 +200,15 @@ const Posts = () => {
               />
             </Form.Group>
 
-            
+            <Form.Group controlId="playlistDescription" className="mt-3">
+              <Form.Label>Playlist Icon</Form.Label>
+              <Form.Control
+                type="file"
+                rows={3}
+                placeholder="Optional"
+                onChange={(e) => setFile(e.target.files[0])}
+              />
+            </Form.Group>
           </Form>
         </Modal.Body>
 
@@ -191,70 +216,153 @@ const Posts = () => {
           <Button variant="secondary" onClick={() => setShowCreateModal(false)}>
             Cancel
           </Button>
-          <Button
-            variant="primary"
-            onClick={createBook}
-          >
-            create
+          <Button variant="primary" onClick={createBook} disabled={isLoading}>
+            {isLoading ? "Loading" : "Create"}
           </Button>
         </Modal.Footer>
       </Modal>
 
+      <Modal
+        show={showEditModal}
+        onHide={() => setShowEditModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Update Playlist</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="playlistName">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter playlist name"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </Form.Group>
 
-<h2 style={{ marginBottom: '24px' }}>Explore Music</h2>
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(165px, 1fr))',
-                gap: '24px'
-              }}>
- {posts.map((song, index) => (
-                  <div 
-                    key={index}
-                    style={{
-                      backgroundColor: '#282828',
-                      borderRadius: '8px',
-                      padding: '16px',
-                      cursor: 'pointer',
-                      transition: 'transform 0.2s, background-color 0.2s'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.02)';
-                      e.currentTarget.style.backgroundColor = '#333';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.backgroundColor = '#282828';
-                    }}
-                  >
-                    <div  style={{
-                      minHeight: '150px',
-                      maxHeight: '200px',
-                      minWidth: '90px',
-                      
-                      backgroundColor: '#404040',
-                      borderRadius: '8px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '60px',
-                      marginBottom: '16px'
-                    }}>
-                    <Image src={song.image || 'https://firebasestorage.googleapis.com/v0/b/sample-firebase-ai-app-fdc98.firebasestorage.app/o/posts%2FjknqVcFEmdMMIF16ikxPqNI7NC62%2FScreenshot%202025-11-13%20144125.png?alt=media&token=144819f4-91b4-40cf-9d97-09cbbb9ec2a6'}
-                    onError={(e) => e.target.src = "https://firebasestorage.googleapis.com/v0/b/sample-firebase-ai-app-fdc98.firebasestorage.app/o/posts%2FjknqVcFEmdMMIF16ikxPqNI7NC62%2FScreenshot%202025-11-13%20144125.png?alt=media&token=144819f4-91b4-40cf-9d97-09cbbb9ec2a6"}
-                    style={{minHeight: '150px',
-                      maxHeight: '200px',
-                      minWidth: '90px',}}/>
-                    </div>
-                    <h5 style={{ color: '#999', marginBottom: '8px', fontSize: '16px', fontWeight: 'bold' }}>{song.title}</h5>
-                    <p style={{ color: '#999', fontSize: '14px', marginBottom: '4px' }}>{song.description}</p>
-                    <button className="mx-2 bi bi-trash" style={{ width: 80}} onClick={()=>DeleteBook(song.id)}>
-                Delete
+            <Form.Group controlId="playlistDescription" className="mt-3">
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                placeholder="Optional"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => UpdateBook(updatePlaylist)}
+            disabled={isLoading}
+          >
+            {isLoading ? "Loading" : "Update"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <h2 style={{ marginBottom: "24px" }}>Explore Music</h2>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(165px, 1fr))",
+          gap: "24px",
+        }}
+      >
+        {posts.map((song, index) => (
+          <div
+            key={index}
+            style={{
+              backgroundColor: "#282828",
+              borderRadius: "8px",
+              padding: "16px",
+              cursor: "pointer",
+              transition: "transform 0.2s, background-color 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.02)";
+              e.currentTarget.style.backgroundColor = "#333";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.backgroundColor = "#282828";
+            }}
+          >
+            <div
+              style={{
+                minHeight: "150px",
+                maxHeight: "200px",
+                minWidth: "90px",
+
+                backgroundColor: "#404040",
+                borderRadius: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "60px",
+                marginBottom: "16px",
+              }}
+            >
+              <Image
+                src={
+                  song.image ||
+                  "https://firebasestorage.googleapis.com/v0/b/sample-firebase-ai-app-fdc98.firebasestorage.app/o/posts%2FjknqVcFEmdMMIF16ikxPqNI7NC62%2FScreenshot%202025-11-13%20144125.png?alt=media&token=144819f4-91b4-40cf-9d97-09cbbb9ec2a6"
+                }
+                onError={(e) =>
+                  (e.target.src =
+                    "https://firebasestorage.googleapis.com/v0/b/sample-firebase-ai-app-fdc98.firebasestorage.app/o/posts%2FjknqVcFEmdMMIF16ikxPqNI7NC62%2FScreenshot%202025-11-13%20144125.png?alt=media&token=144819f4-91b4-40cf-9d97-09cbbb9ec2a6")
+                }
+                style={{
+                  minHeight: "150px",
+                  maxHeight: "200px",
+                  minWidth: "90px",
+                }}
+              />
+            </div>
+            <h5
+              style={{
+                color: "#999",
+                marginBottom: "8px",
+                fontSize: "16px",
+                fontWeight: "bold",
+              }}
+            >
+              {song.title}
+            </h5>
+            <p style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}>
+              {song.description}
+            </p>
+            <button
+              className="mx-2"
+              onClick={() => {
+                setDescription(song.description);
+                setTitle(song.title);
+                setUpdatePlaylist(song);
+                setShowEditModal(true);
+              }}
+            >
+              <i className="bi bi-pencil-square" style={{ width: 50 }}>
+                Update
+              </i>
             </button>
-                  </div>
-                
-                ))}
- </div>
-
+            <button
+              className="mx-2 bi bi-trash"
+              style={{ width: 80 }}
+              onClick={() => DeleteBook(song.id)}
+            >
+              Delete
+            </button>
+          </div>
+        ))}
+      </div>
 
       {/*  <div className="">
     
@@ -292,12 +400,8 @@ const Posts = () => {
 )}
 </div>
 */}
-</>
-    )
+    </>
+  );
+};
 
-}
-        
-
-    
-
-export default Posts
+export default Posts;

@@ -107,11 +107,17 @@ const ProfilePage = () => {
   return (
     <>
       <div
+        className="bg-image"
         style={{
           display: "flex",
           flexDirection: "column",
           minHeight: "100vh",
-          backgroundColor: "#121212",
+          backgroundImage: `
+      linear-gradient(90deg, rgba(145, 0, 58, 0.55), rgba(207, 71, 96, 0.55), rgba(255, 160, 160, 0.85)),
+      url("src/images/test2.webp")
+    `,
+
+          backgroundPosition: "center",
         }}
       >
         {/* Navbar */}
@@ -120,7 +126,8 @@ const ProfilePage = () => {
             position: "sticky",
             top: 0,
             zIndex: 1000,
-            backgroundColor: "#000",
+            background:
+              "linear-gradient(90deg, #630030ff 20%, #b42779ff 40%, #972a4bff 60%, #ec4174ff 100%)",
             color: "white",
             padding: "12px 24px",
             display: "flex",
@@ -154,7 +161,7 @@ const ProfilePage = () => {
           <div style={{ flex: "0 1 500px", margin: "0 20px" }}>
             <input
               type="search"
-              placeholder="Search for songs, artists, albums..."
+              placeholder="Search for artists..."
               value={searchQuery}
               onKeyDown={(event) => {
                 if (event.key == "Enter") {
@@ -324,18 +331,39 @@ const ProfilePage = () => {
           }}
         >
           {isLoading ? (
-            <div className="text-center" style={{ fontSize: "100px" }}>
-              Loading songs...
+            <div
+              className="text-center"
+              style={{
+                fontSize: "100px",
+                color: "#990000ff",
+                fontWeight: "bold",
+              }}
+            >
+              fetching tracks...
             </div>
           ) : (
             <Container>
               <Row className="mx-2 row row-cols-1">
                 {!songs.length ? (
-                  <div className="text-center" style={{ fontSize: "50px" }}>
+                  <div
+                    className="text-center"
+                    style={{
+                      fontSize: "50px",
+                      color: "#990000ff",
+                      fontWeight: "bold",
+                    }}
+                  >
                     Type the search bar to find songs
                   </div>
                 ) : (
-                  <div className="text-center" style={{ fontSize: "50px" }}>
+                  <div
+                    className="text-center"
+                    style={{
+                      fontSize: "50px",
+                      color: "#990000ff",
+                      fontWeight: "bold",
+                    }}
+                  >
                     Result
                   </div>
                 )}
@@ -380,7 +408,7 @@ const ProfilePage = () => {
                           <div
                             style={{
                               fontWeight: "500",
-                              fontSize: "14px",
+                              fontSize: "30px",
                               whiteSpace: "nowrap",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
@@ -390,7 +418,7 @@ const ProfilePage = () => {
                           </div>
                           <div
                             style={{
-                              fontSize: "12px",
+                              fontSize: "25px",
                               opacity: "0.8",
                               whiteSpace: "nowrap",
                               overflow: "hidden",
@@ -419,7 +447,7 @@ const ProfilePage = () => {
               bottom: 0,
               left: 0,
               right: 0,
-              background: "linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%)",
+              background: "linear-gradient(180deg, #1a1a1a 0%, #444444ff 100%)",
               padding: "12px 16px",
               borderTop: "1px solid #333",
               zIndex: 1000,
@@ -451,7 +479,7 @@ const ProfilePage = () => {
                     style={{
                       color: "#fff",
                       fontWeight: "500",
-                      fontSize: "13px",
+                      fontSize: "18px",
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -462,7 +490,7 @@ const ProfilePage = () => {
                   <div
                     style={{
                       color: "#b3b3b3",
-                      fontSize: "11px",
+                      fontSize: "15px",
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -615,7 +643,7 @@ const ProfilePage = () => {
                     style={{
                       color: "#fff",
                       fontWeight: "500",
-                      fontSize: "14px",
+                      fontSize: "30px",
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -626,7 +654,7 @@ const ProfilePage = () => {
                   <div
                     style={{
                       color: "#b3b3b3",
-                      fontSize: "12px",
+                      fontSize: "20px",
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",

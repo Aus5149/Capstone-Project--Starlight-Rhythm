@@ -45,9 +45,9 @@ const LoginPage = () => {
 
   // Sample background images - you can replace these with your own
   const backgrounds = [
-    'url("https://firebasestorage.googleapis.com/v0/b/sample-firebase-ai-app-fdc98.firebasestorage.app/o/posts%2Fr7eQXmwdXGTxSCMgCEVY61ymGX23%2FScreenshot%202025-12-15%20164836.png?alt=media&token=60f063b4-1591-4070-a4af-96b95b06f5a2")',
+    'url("src/images/Background1.webp")',
     'url("src/images/mock.png")',
-    'url("src/images/Test.webp")',
+    'url("src/images/Whole_Album.png")',
     "linear-gradient(135deg, #430000ff 0%, #58000cff 100%)",
     "linear-gradient(135deg, #040075ff 0%, #001a78ff 100%)",
     "linear-gradient(135deg, #004316ff 0%, #075500ff 100%)",
@@ -109,16 +109,30 @@ const LoginPage = () => {
                 borderRadius: "1rem",
                 zIndex: 10,
                 background:
-                  "linear-gradient(180deg, #a80062ff 50%, #ff005181 100%)",
+                  "linear-gradient(180deg, #ff1ea1ff 20%, #a5226fff 40%, #c7003c8a 60%, #34001081 100%)",
               }}
             >
+              <i
+                className="bi bi-lock-fill"
+                style={{ fontSize: "50px", color: "white" }}
+              ></i>
               <div className="header-container">
-                <h1 className="text-center my-4">Login to Starred Music</h1>
+                <h1
+                  className="text-center my-4"
+                  style={{
+                    color: "#6300158a",
+                    fontWeight: "bolder",
+                  }}
+                >
+                  Login to access
+                </h1>
               </div>
 
               <Form onSubmit={handleLogin}>
                 <Form.Group className="mb-3" controlId="email">
-                  <Form.Label>Email address</Form.Label>
+                  <Form.Label style={{ fontSize: "30px", fontWeight: "bold" }}>
+                    Email address
+                  </Form.Label>
                   <Form.Control
                     type="email"
                     placeholder="name@example.com"
@@ -130,7 +144,9 @@ const LoginPage = () => {
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="password">
-                  <Form.Label>Password</Form.Label>
+                  <Form.Label style={{ fontSize: "30px", fontWeight: "bold" }}>
+                    Password
+                  </Form.Label>
                   <Form.Control
                     type="password"
                     placeholder="••••••••"
@@ -154,7 +170,11 @@ const LoginPage = () => {
                 </Button>
               </Form>
               <div className="text-center mt-3">
-                <small>
+                <small
+                  style={{
+                    color: "#ffd4dd8a",
+                  }}
+                >
                   Don't have an account?{" "}
                   <a href="/signup" className="register-text">
                     Sign up
@@ -166,7 +186,7 @@ const LoginPage = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-1">
+      {/*    <div className="flex flex-col gap-1">
         <input
           type="text"
           value={email}
@@ -184,7 +204,7 @@ const LoginPage = () => {
         ) : (
           <button onClick={handleLogin}>Login</button>
         )}
-      </div>
+      </div>*/}
     </>
   );
 };

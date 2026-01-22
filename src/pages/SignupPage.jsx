@@ -111,16 +111,30 @@ const SignupPage = () => {
                 borderRadius: "1rem",
                 zIndex: 10,
                 background:
-                  "linear-gradient(180deg, #a80062ff 50%, #ff005181 100%)",
+                  "linear-gradient(180deg, #ff1ea1ff 20%, #a5226fff 40%, #c7003c8a 600%, #34001081 100%)",
               }}
             >
+              <i
+                className="bi bi-lock-fill"
+                style={{ fontSize: "50px", color: "white" }}
+              ></i>
               <div className="header-container">
-                <h1 className="text-center my-4">Create an account</h1>
+                <h1
+                  className="text-center my-4"
+                  style={{
+                    color: "#6300158a",
+                    fontWeight: "bolder",
+                  }}
+                >
+                  Create an account
+                </h1>
               </div>
 
               <Form onSubmit={handleSignup}>
                 <Form.Group className="mb-3" controlId="email">
-                  <Form.Label>Email address</Form.Label>
+                  <Form.Label style={{ fontSize: "30px", fontWeight: "bold" }}>
+                    Email address
+                  </Form.Label>
                   <Form.Control
                     type="email"
                     placeholder="name@example.com"
@@ -132,7 +146,9 @@ const SignupPage = () => {
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="password">
-                  <Form.Label>Create a password</Form.Label>
+                  <Form.Label style={{ fontSize: "30px", fontWeight: "bold" }}>
+                    Create a password
+                  </Form.Label>
                   <Form.Control
                     type="password"
                     placeholder="••••••••"
@@ -156,7 +172,11 @@ const SignupPage = () => {
                 </Button>
               </Form>
               <div className="text-center mt-3">
-                <small>
+                <small
+                  style={{
+                    color: "#ffd4dd8a",
+                  }}
+                >
                   Already have an account?{" "}
                   <a href="/login" className="register-text">
                     Log in

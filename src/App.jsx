@@ -12,6 +12,7 @@ import BackgroundTransition from "./pages/BackgroundImageTest";
 import LibraryPage from "./pages/LibraryPage";
 import SidebarTest from "./pages/SidebarTest";
 import NavbarPage from "./pages/NavbarPage";
+import Landingpage from "./pages/LandingPage";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/background" element={<BackgroundTransition />} />
             <Route path="/sidebar" element={<SidebarTest />} />
             <Route path="/profile" element={<MainProfilePage />} />
+            <Route path="/" element={<Landingpage />} />
 
             <Route element={<NavbarPage />}>
               <Route path="/library" element={<LibraryPage />} />

@@ -19,7 +19,7 @@ const Posts = () => {
   const [posts, setPosts] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [file, setFile] = useState();
+  const [file, setFile] = useState(null);
 
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -55,13 +55,22 @@ const Posts = () => {
 
   async function createBook() {
     setLoading(true);
-    // 1. We want to define where are we saving?
-    // Reference Point to the storage
-    const savePoint = ref(storage, `posts/${currentUser.uid}/${file.name}`);
-    // 2. Upload the file to the point we want to save.
-    const response1 = await uploadBytes(savePoint, file);
-    // 3. Get the download url after uploading
-    const imageUrl = await getDownloadURL(response1.ref);
+    if (title === "" || description === "") {
+      //setError(plaese a user name)
+      setLoading(false);
+      return;
+    }
+    let imageUrl;
+    console.log(file);
+    if (file !== null) {
+      // 1. We want to define where are we saving?
+      // Reference Point to the storage
+      const savePoint = ref(storage, `posts/${currentUser.uid}/${file.name}`);
+      // 2. Upload the file to the point we want to save.
+      const response1 = await uploadBytes(savePoint, file);
+      // 3. Get the download url after uploading
+      imageUrl = await getDownloadURL(response1.ref);
+    }
 
     const userId = currentUser.uid;
     const response = await fetch(`${API_URL}/playlist`, {

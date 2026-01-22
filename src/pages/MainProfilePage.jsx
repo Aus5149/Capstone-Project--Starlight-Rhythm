@@ -117,6 +117,9 @@ const ProfilePage = () => {
         {/* Navbar */}
         <nav
           style={{
+            position: "sticky",
+            top: 0,
+            zIndex: 1000,
             backgroundColor: "#000",
             color: "white",
             padding: "12px 24px",

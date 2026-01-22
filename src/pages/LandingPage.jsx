@@ -102,11 +102,11 @@ const Landingpage = () => {
             maxWidth: "800px",
           }}
         >
-          Music app crashed earth from outer space.
+          Music app crashed on earth from outer space.
         </p>
 
         <Button
-          className="w-100 rounded-pill mt-3"
+          className="w-70 rounded-pill my-2"
           style={{ background: "#0062a8ff", border: "none" }}
           onClick={FireRoute}
         >

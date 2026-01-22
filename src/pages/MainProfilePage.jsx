@@ -14,6 +14,7 @@ import {
   Nav,
 } from "react-bootstrap";
 import { AuthContext } from "../context/authContext";
+import bbbImage from "../images/ProfileBackground.webp";
 const CLIENT_ID = "ee89ebc6c60b482889ad000b20b14608";
 const CLIENT_SECRET = "3cfd4e2e837d4b07b610e2865f1d3099";
 
@@ -114,7 +115,7 @@ const ProfilePage = () => {
           minHeight: "100vh",
           backgroundImage: `
       linear-gradient(90deg, rgba(145, 0, 58, 0.55), rgba(207, 71, 96, 0.55), rgba(255, 160, 160, 0.85)),
-      url("src/images/test2.webp")
+      url(${bbbImage})
     `,
 
           backgroundPosition: "center",
@@ -205,17 +206,32 @@ const ProfilePage = () => {
             onHide={handleClose}
             placement="start"
             style={{
-              backgroundColor: "#000",
+              backgroundColor: "#560028ff",
               color: "white",
             }}
           >
             <Offcanvas.Header
               closeButton
               closeVariant="white"
-              style={{ borderBottom: "1px solid #282828" }}
+              style={{ borderBottom: "1px solid #320018ff" }}
             >
-              <Offcanvas.Title style={{ color: "#1DB954", fontWeight: "bold" }}>
-                <span style={{ fontSize: "24px" }}>🎵</span> Starlight Rhythm
+              <Offcanvas.Title
+                style={{ color: "#da007cff", fontWeight: "bold" }}
+              >
+                <span style={{ fontSize: "24px" }}>
+                  <Image
+                    src={bbbImage}
+                    rounded
+                    className="me-2 me-md-3 flex-shrink-0"
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      objectFit: "cover",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </span>{" "}
+                Starlight Rhythm
               </Offcanvas.Title>
             </Offcanvas.Header>
 
@@ -314,7 +330,7 @@ const ProfilePage = () => {
                   color: "#b3b3b3",
                 }}
               >
-                <p className="mb-0">© 2024 Spotify Clone</p>
+                <p className="mb-0">© Starred</p>
               </div>
             </Offcanvas.Body>
           </Offcanvas>
@@ -332,36 +348,39 @@ const ProfilePage = () => {
         >
           {isLoading ? (
             <div
-              className="text-center"
+              className="text-center w-100 rounded-pill mt-3"
               style={{
-                fontSize: "100px",
+                fontSize: "50px",
                 color: "#990000ff",
                 fontWeight: "bold",
+                backgroundColor: "#0000002e",
               }}
             >
-              fetching tracks...
+              Fetching tracks...
             </div>
           ) : (
             <Container>
               <Row className="mx-2 row row-cols-1">
                 {!songs.length ? (
                   <div
-                    className="text-center"
+                    className="text-center w-100 rounded-pill mt-3"
                     style={{
                       fontSize: "50px",
                       color: "#990000ff",
                       fontWeight: "bold",
+                      backgroundColor: "#0000002e",
                     }}
                   >
                     Type the search bar to find songs
                   </div>
                 ) : (
                   <div
-                    className="text-center"
+                    className="text-center w-100 rounded-pill mt-3"
                     style={{
                       fontSize: "50px",
                       color: "#990000ff",
                       fontWeight: "bold",
+                      backgroundColor: "#0000002e",
                     }}
                   >
                     Result

@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import { Form, Button, Card, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import Background1 from "../images/Background1.webp";
 
 const LoginPage = () => {
   const auth = getAuth();
@@ -45,7 +46,7 @@ const LoginPage = () => {
 
   // Sample background images - you can replace these with your own
   const backgrounds = [
-    'url("src/images/Background1.webp")',
+    `url('${Background1}')`,
     'url("src/images/mock.png")',
     'url("src/images/Whole_Album.png")',
     "linear-gradient(135deg, #430000ff 0%, #58000cff 100%)",

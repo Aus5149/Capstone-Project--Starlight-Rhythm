@@ -187,7 +187,7 @@ const SignupPage = () => {
           </div>
         </div>
       </div>
-
+      {/* 
       <div className="flex flex-col gap-1">
         <input
           type="text"
@@ -204,6 +204,7 @@ const SignupPage = () => {
         <button onClick={handleSignup}>Sign Up</button>
         <div>{error}</div>
       </div>
+      */}
     </>
   );
 };

@@ -14,7 +14,8 @@ import {
   Nav,
 } from "react-bootstrap";
 import { AuthContext } from "../context/authContext";
-import bbbImage from "../images/ProfileBackground.webp";
+import bbbImage from "../images/StarlightRhythm.webp";
+import profileBackground from "../images/ProfileBackground.webp";
 const CLIENT_ID = "ee89ebc6c60b482889ad000b20b14608";
 const CLIENT_SECRET = "3cfd4e2e837d4b07b610e2865f1d3099";
 
@@ -115,7 +116,7 @@ const ProfilePage = () => {
           minHeight: "100vh",
           backgroundImage: `
       linear-gradient(90deg, rgba(145, 0, 58, 0.55), rgba(207, 71, 96, 0.55), rgba(255, 160, 160, 0.85)),
-      url(${bbbImage})
+      url(${profileBackground})
     `,
 
           backgroundPosition: "center",
@@ -351,9 +352,9 @@ const ProfilePage = () => {
               className="text-center w-100 rounded-pill mt-3"
               style={{
                 fontSize: "50px",
-                color: "#990000ff",
+                color: "#d73333ff",
                 fontWeight: "bold",
-                backgroundColor: "#0000002e",
+                backgroundColor: "#0000009e",
               }}
             >
               Fetching tracks...
@@ -366,9 +367,9 @@ const ProfilePage = () => {
                     className="text-center w-100 rounded-pill mt-3"
                     style={{
                       fontSize: "50px",
-                      color: "#990000ff",
+                      color: "#d73333ff",
                       fontWeight: "bold",
-                      backgroundColor: "#0000002e",
+                      backgroundColor: "#0000009e",
                     }}
                   >
                     Type the search bar to find songs
@@ -378,9 +379,9 @@ const ProfilePage = () => {
                     className="text-center w-100 rounded-pill mt-3"
                     style={{
                       fontSize: "50px",
-                      color: "#990000ff",
+                      color: "#d73333ff",
                       fontWeight: "bold",
-                      backgroundColor: "#0000002e",
+                      backgroundColor: "#0000009e",
                     }}
                   >
                     Result

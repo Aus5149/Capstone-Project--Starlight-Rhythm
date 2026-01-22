@@ -23,6 +23,7 @@ const ProfilePage = () => {
   const [accessToken, setAccessToken] = useState("");
   const [songs, setSongs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedSong, setSelectedSong] = useState(null);
 
   const { currentUser, authLoading } = useContext(AuthContext);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -125,11 +126,6 @@ const ProfilePage = () => {
             boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
           }}
         >
-          <div
-            style={{ fontSize: "24px", fontWeight: "bold", color: "#1DB954" }}
-          >
-            <span style={{ fontSize: "28px" }}></span> Starlight Rhythm
-          </div>
           {/* Menu Button */}
           <Button
             variant="link"
@@ -144,6 +140,13 @@ const ProfilePage = () => {
           >
             <i className="bi bi-list" style={{ fontSize: "28px" }}></i>
           </Button>
+
+          {/*  <div
+            style={{ fontSize: "24px", fontWeight: "bold", color: "#1DB954" }}
+          >
+            <span style={{ fontSize: "28px" }}></span> Starlight Rhythm
+          </div>
+          */}
 
           <div style={{ flex: "0 1 500px", margin: "0 20px" }}>
             <input
@@ -311,31 +314,81 @@ const ProfilePage = () => {
 
         {/* old layer */}
 
-        <div style={{ color: "#b3b3b3" }}>
+        <div
+          style={{
+            color: "#b3b3b3",
+            paddingBottom: selectedSong ? "140px" : "0",
+          }}
+        >
           {isLoading ? (
             "Loading Songs"
           ) : (
             <Container>
               <Row className="mx-2 row row-cols-1">
-                {songs.map((songs) => {
-                  console.log(songs);
+                {songs.map((song) => {
+                  console.log(song);
                   return (
-                    <div key={songs.id}>
-                      <Card className="my-1">
+                    <div key={song.id}>
+                      <div
+                        className="my-1 d-flex align-items-center"
+                        style={{
+                          background:
+                            "linear-gradient(180deg, #a80062ff 50%, #ff005181 100%)",
+                          borderRadius: "8px",
+                          padding: "12px",
+                          transition: "transform 0.2s, background 0.2s",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => setSelectedSong(song)}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = "scale(1.02)";
+                          e.currentTarget.style.background =
+                            "linear-gradient(180deg, #a8006257 50%, #ff005141 100%)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = "scale(1)";
+                          e.currentTarget.style.background =
+                            "linear-gradient(180deg, #a80062ff 50%, #ff005181 100%)";
+                        }}
+                      >
                         <Image
-                          src={songs.album.images[0].url}
+                          src={song.album.images[0].url}
                           rounded
-                          className="me-3-shrink-0"
+                          className="me-2 me-md-3 flex-shrink-0"
                           style={{
-                            width: "56px",
-                            height: "56px",
+                            width: "60px",
+                            height: "60px",
                             objectFit: "cover",
+                            borderRadius: "8px",
                           }}
                         />
-                        <Card.Body>
-                          <Card.Title>{songs.name}</Card.Title>
-                        </Card.Body>
-                      </Card>
+                        <div className="flex-grow-1" style={{ minWidth: 0 }}>
+                          <div
+                            style={{
+                              fontWeight: "500",
+                              fontSize: "14px",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {song.name}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: "12px",
+                              opacity: "0.8",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {song.artists
+                              .map((artist) => artist.name)
+                              .join(", ")}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   );
                 })}
@@ -343,6 +396,335 @@ const ProfilePage = () => {
             </Container>
           )}
         </div>
+
+        {/* Music Player */}
+        {selectedSong && (
+          <div
+            style={{
+              position: "fixed",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              background: "linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%)",
+              padding: "12px 16px",
+              borderTop: "1px solid #333",
+              zIndex: 1000,
+            }}
+          >
+            {/* Mobile Layout */}
+            <div className="d-md-none">
+              {/* Song Info Row */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginBottom: "12px",
+                }}
+              >
+                <Image
+                  src={selectedSong.album.images[0].url}
+                  rounded
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    objectFit: "cover",
+                    borderRadius: "4px",
+                    marginRight: "12px",
+                  }}
+                />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div
+                    style={{
+                      color: "#fff",
+                      fontWeight: "500",
+                      fontSize: "13px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {selectedSong.name}
+                  </div>
+                  <div
+                    style={{
+                      color: "#b3b3b3",
+                      fontSize: "11px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {selectedSong.artists
+                      .map((artist) => artist.name)
+                      .join(", ")}
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedSong(null)}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    color: "#b3b3b3",
+                    cursor: "pointer",
+                    fontSize: "18px",
+                    padding: "0 8px",
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Progress Bar */}
+              <div style={{ marginBottom: "8px" }}>
+                <div
+                  style={{
+                    width: "100%",
+                    height: "3px",
+                    background: "#404040",
+                    borderRadius: "2px",
+                    position: "relative",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "30%",
+                      height: "100%",
+                      background: "#fff",
+                      borderRadius: "2px",
+                    }}
+                  />
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: "4px",
+                  }}
+                >
+                  <span style={{ color: "#b3b3b3", fontSize: "10px" }}>
+                    0:00
+                  </span>
+                  <span style={{ color: "#b3b3b3", fontSize: "10px" }}>
+                    {selectedSong.duration_ms
+                      ? `${Math.floor(selectedSong.duration_ms / 60000)}:${String(Math.floor((selectedSong.duration_ms % 60000) / 1000)).padStart(2, "0")}`
+                      : "3:45"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Controls */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: "24px",
+                }}
+              >
+                <button
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    color: "#b3b3b3",
+                    cursor: "pointer",
+                    fontSize: "24px",
+                  }}
+                >
+                  ⏮
+                </button>
+                <button
+                  style={{
+                    background: "#fff",
+                    border: "none",
+                    borderRadius: "50%",
+                    width: "40px",
+                    height: "40px",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  ▶
+                </button>
+                <button
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    color: "#b3b3b3",
+                    cursor: "pointer",
+                    fontSize: "24px",
+                  }}
+                >
+                  ⏭
+                </button>
+              </div>
+            </div>
+
+            {/* Desktop Layout */}
+            <div
+              className="d-none d-md-flex"
+              style={{ alignItems: "center", justifyContent: "space-between" }}
+            >
+              {/* Left: Song Info */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  flex: "0 0 30%",
+                  minWidth: 0,
+                }}
+              >
+                <Image
+                  src={selectedSong.album.images[0].url}
+                  rounded
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    objectFit: "cover",
+                    borderRadius: "4px",
+                    marginRight: "16px",
+                    flexShrink: 0,
+                  }}
+                />
+                <div style={{ minWidth: 0 }}>
+                  <div
+                    style={{
+                      color: "#fff",
+                      fontWeight: "500",
+                      fontSize: "14px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {selectedSong.name}
+                  </div>
+                  <div
+                    style={{
+                      color: "#b3b3b3",
+                      fontSize: "12px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {selectedSong.artists
+                      .map((artist) => artist.name)
+                      .join(", ")}
+                  </div>
+                </div>
+              </div>
+
+              {/* Center: Controls */}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  flex: "0 0 40%",
+                }}
+              >
+                <div
+                  style={{ display: "flex", gap: "16px", marginBottom: "8px" }}
+                >
+                  <button
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "#b3b3b3",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                    }}
+                  >
+                    ⏮
+                  </button>
+                  <button
+                    style={{
+                      background: "#fff",
+                      border: "none",
+                      borderRadius: "50%",
+                      width: "36px",
+                      height: "36px",
+                      cursor: "pointer",
+                      fontSize: "16px",
+                    }}
+                  >
+                    ▶
+                  </button>
+                  <button
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "#b3b3b3",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                    }}
+                  >
+                    ⏭
+                  </button>
+                </div>
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                >
+                  <span style={{ color: "#b3b3b3", fontSize: "12px" }}>
+                    0:00
+                  </span>
+                  <div
+                    style={{
+                      flex: 1,
+                      height: "4px",
+                      background: "#404040",
+                      borderRadius: "2px",
+                      position: "relative",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "30%",
+                        height: "100%",
+                        background: "#fff",
+                        borderRadius: "2px",
+                      }}
+                    />
+                  </div>
+                  <span style={{ color: "#b3b3b3", fontSize: "12px" }}>
+                    {selectedSong.duration_ms
+                      ? `${Math.floor(selectedSong.duration_ms / 60000)}:${String(Math.floor((selectedSong.duration_ms % 60000) / 1000)).padStart(2, "0")}`
+                      : "3:45"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Right: Close button */}
+              <div
+                style={{
+                  flex: "0 0 30%",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <button
+                  onClick={() => setSelectedSong(null)}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    color: "#b3b3b3",
+                    cursor: "pointer",
+                    fontSize: "20px",
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

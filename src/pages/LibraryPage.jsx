@@ -12,6 +12,7 @@ import {
   Modal,
   Form,
   Button,
+  Dropdown,
 } from "react-bootstrap";
 const Posts = () => {
   const [posts, setPosts] = useState([]);
@@ -25,6 +26,7 @@ const Posts = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [updatePlaylist, setUpdatePlaylist] = useState(null);
+  const [showEditImageModal, setShowEditImageModal] = useState(false);
 
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
@@ -113,6 +115,36 @@ const Posts = () => {
     console.log(res);
     //const data = await response.json()
     console.log(`Update ${postId}`);
+  }
+
+  async function UpdateImage(postId) {
+    setLoading(true);
+    // 1. We want to define where are we saving?
+    // Reference Point to the storage
+    const savePoint = ref(storage, `posts/${currentUser.uid}/${file.name}`);
+    // 2. Upload the file to the point we want to save.
+    const response1 = await uploadBytes(savePoint, file);
+    // 3. Get the download url after uploading
+    const imageUrl = await getDownloadURL(response1.ref);
+    // a button that will change the specific post title and content
+    const res = await fetch(`${API_URL}/playlist`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        image: imageUrl,
+        post_id: postId.id,
+      }),
+    });
+    console.log(imageUrl);
+    console.log(postId.id);
+    const data = await res.json();
+    setPosts(posts.map((post) => (post.id === postId.id ? data : post)));
+    console.log(res);
+    //const data = await response.json()
+    console.log(`Update image ${postId}`);
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -272,6 +304,46 @@ const Posts = () => {
         </Modal.Footer>
       </Modal>
 
+      {/* image update */}
+      <Modal
+        show={showEditImageModal}
+        onHide={() => setShowEditImageModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Update Playlist</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="playlistDescription" className="mt-3">
+              <Form.Label>Playlist Icon</Form.Label>
+              <Form.Control
+                type="file"
+                rows={3}
+                placeholder="Optional"
+                onChange={(e) => setFile(e.target.files[0])}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setShowEditImageModal(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => UpdateImage(updatePlaylist)}
+            disabled={isLoading}
+          >
+            {isLoading ? "Loading" : "Update"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <h2 style={{ marginBottom: "24px" }}>Explore Music</h2>
       <div
         style={{
@@ -343,6 +415,20 @@ const Posts = () => {
             <p style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}>
               {song.description}
             </p>
+
+            <button
+              className="mx-2"
+              onClick={() => {
+                setUpdatePlaylist(song);
+                setFile(song.image);
+                setShowEditImageModal(true);
+              }}
+            >
+              <i className="bi bi-pencil-square" style={{ width: 50 }}>
+                Update Image
+              </i>
+            </button>
+
             <button
               className="mx-2"
               onClick={() => {

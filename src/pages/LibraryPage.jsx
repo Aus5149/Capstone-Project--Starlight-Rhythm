@@ -28,6 +28,23 @@ const Posts = () => {
   const [updatePlaylist, setUpdatePlaylist] = useState(null);
   const [showEditImageModal, setShowEditImageModal] = useState(false);
 
+  // New state for managing dropdown
+  const [openDropdownId, setOpenDropdownId] = useState(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (openDropdownId !== null) {
+        setOpenDropdownId(null);
+      }
+    };
+
+    if (openDropdownId !== null) {
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }
+  }, [openDropdownId]);
+
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
   console.log(posts);
@@ -73,7 +90,7 @@ const Posts = () => {
         user_id: userId,
       }),
     });
-
+    setShowCreateModal(false);
     console.log("Created");
     setTitle("");
     setDescription("");
@@ -95,6 +112,7 @@ const Posts = () => {
   }
 
   async function UpdateBook(postId) {
+    setLoading(true);
     // a button that will change the specific post title and content
     const res = await fetch(`${API_URL}/playlist`, {
       method: "PUT",
@@ -107,6 +125,7 @@ const Posts = () => {
         post_id: postId.id,
       }),
     });
+    setShowEditModal(false);
     console.log(title);
     console.log(description);
     console.log(postId.id);
@@ -115,6 +134,7 @@ const Posts = () => {
     console.log(res);
     //const data = await response.json()
     console.log(`Update ${postId}`);
+    setLoading(false);
   }
 
   async function UpdateImage(postId) {
@@ -127,7 +147,7 @@ const Posts = () => {
     // 3. Get the download url after uploading
     const imageUrl = await getDownloadURL(response1.ref);
     // a button that will change the specific post title and content
-    const res = await fetch(`${API_URL}/playlist`, {
+    const res = await fetch(`${API_URL}/playlistImage`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -142,6 +162,9 @@ const Posts = () => {
     const data = await res.json();
     setPosts(posts.map((post) => (post.id === postId.id ? data : post)));
     console.log(res);
+    setTitle("");
+    setDescription("");
+    setShowEditImageModal(false);
     //const data = await response.json()
     console.log(`Update image ${postId}`);
     setLoading(false);
@@ -206,7 +229,12 @@ const Posts = () => {
       {/* Modal */}
       <Modal
         show={showCreateModal}
-        onHide={() => setShowCreateModal(false)}
+        onHide={() => {
+          setShowCreateModal(false);
+          setTitle("");
+          setDescription("");
+          setFile();
+        }}
         centered
       >
         <Modal.Header closeButton>
@@ -218,9 +246,11 @@ const Posts = () => {
               <Form.Label>Name</Form.Label>
               <Form.Control
                 type="text"
+                required
                 placeholder="Enter playlist name"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                maxLength={16}
               />
             </Form.Group>
 
@@ -242,6 +272,7 @@ const Posts = () => {
                 rows={3}
                 placeholder="Optional"
                 onChange={(e) => setFile(e.target.files[0])}
+                required
               />
             </Form.Group>
           </Form>
@@ -252,14 +283,18 @@ const Posts = () => {
             Cancel
           </Button>
           <Button variant="primary" onClick={createBook} disabled={isLoading}>
-            {isLoading ? "Loading" : "Create"}
+            {isLoading ? "Loading..." : "Create"}
           </Button>
         </Modal.Footer>
       </Modal>
 
       <Modal
         show={showEditModal}
-        onHide={() => setShowEditModal(false)}
+        onHide={() => {
+          setShowEditModal(false);
+          setTitle("");
+          setDescription("");
+        }}
         centered
       >
         <Modal.Header closeButton>
@@ -270,6 +305,7 @@ const Posts = () => {
             <Form.Group controlId="playlistName">
               <Form.Label>Name</Form.Label>
               <Form.Control
+                maxLength={16}
                 type="text"
                 placeholder="Enter playlist name"
                 value={title}
@@ -299,7 +335,7 @@ const Posts = () => {
             onClick={() => UpdateBook(updatePlaylist)}
             disabled={isLoading}
           >
-            {isLoading ? "Loading" : "Update"}
+            {isLoading ? "Loading..." : "Update"}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -345,6 +381,222 @@ const Posts = () => {
       </Modal>
 
       <h2 style={{ marginBottom: "24px" }}>Explore Music</h2>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(165px, 1fr))",
+          gap: "24px",
+        }}
+      >
+        {posts.map((song, index) => (
+          <div
+            key={song.id || index} // Use song.id if available
+            style={{
+              backgroundColor: "#282828",
+              borderRadius: "8px",
+              padding: "16px",
+              cursor: "pointer",
+              transition: "transform 0.2s, background-color 0.2s",
+              position: "relative",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.02)";
+              e.currentTarget.style.backgroundColor = "#333";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.backgroundColor = "#282828";
+            }}
+          >
+            {/* Three Dots Dropdown Menu - Bootstrap Version */}
+            <Dropdown
+              show={openDropdownId === (song.id || index)}
+              onToggle={(isOpen) => {
+                setOpenDropdownId(isOpen ? song.id || index : null);
+              }}
+              drop="down"
+              align="end"
+            >
+              <Dropdown.Toggle
+                as="button"
+                className="dropdown-toggle-custom"
+                style={{
+                  position: "absolute",
+                  top: "12px",
+                  right: "12px",
+                  zIndex: 10,
+                  color: "#b3b3b3",
+                  padding: "6px 10px",
+                  fontSize: "20px",
+                  backgroundColor: "rgba(0,0,0,0.6)",
+                  borderRadius: "50%",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <i className="bi bi-three-dots-vertical"></i>
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu
+                style={{
+                  backgroundColor: "#282828",
+                  border: "1px solid #404040",
+                  borderRadius: "8px",
+                  minWidth: "180px",
+                  padding: "8px 0",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
+                }}
+              >
+                {/* Update Image */}
+                <Dropdown.Item
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setUpdatePlaylist(song);
+                    setFile(song.image);
+                    setShowEditImageModal(true);
+                    setOpenDropdownId(null);
+                  }}
+                  style={{
+                    color: "#fff",
+                    padding: "10px 16px",
+                    fontSize: "14px",
+                  }}
+                  className="dropdown-item-custom"
+                >
+                  <i className="bi bi-image me-2"></i>
+                  Update Image
+                </Dropdown.Item>
+
+                {/* Update */}
+                <Dropdown.Item
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDescription(song.description);
+                    setTitle(song.title);
+                    setUpdatePlaylist(song);
+                    setShowEditModal(true);
+                    setOpenDropdownId(null);
+                  }}
+                  style={{
+                    color: "#fff",
+                    padding: "10px 16px",
+                    fontSize: "14px",
+                  }}
+                  className="dropdown-item-custom"
+                >
+                  <i className="bi bi-pencil-square me-2"></i>
+                  Update
+                </Dropdown.Item>
+
+                <Dropdown.Divider
+                  style={{ borderColor: "#404040", margin: "8px 0" }}
+                />
+
+                {/* Delete */}
+                <Dropdown.Item
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    DeleteBook(song.id);
+                    setOpenDropdownId(null);
+                  }}
+                  style={{
+                    color: "#ff4444",
+                    padding: "10px 16px",
+                    fontSize: "14px",
+                  }}
+                  className="dropdown-item-custom"
+                >
+                  <i className="bi bi-trash me-2"></i>
+                  Delete
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+
+            {/* Album Image */}
+            <div
+              style={{
+                minHeight: "150px",
+                maxHeight: "200px",
+                minWidth: "90px",
+                backgroundColor: "#404040",
+                borderRadius: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "60px",
+                marginBottom: "16px",
+                overflow: "hidden",
+              }}
+            >
+              <Image
+                src={
+                  song.image ||
+                  "https://firebasestorage.googleapis.com/v0/b/sample-firebase-ai-app-fdc98.firebasestorage.app/o/posts%2FjknqVcFEmdMMIF16ikxPqNI7NC62%2FScreenshot%202025-11-13%20144125.png?alt=media&token=144819f4-91b4-40cf-9d97-09cbbb9ec2a6"
+                }
+                onError={(e) =>
+                  (e.target.src =
+                    "https://firebasestorage.googleapis.com/v0/b/sample-firebase-ai-app-fdc98.firebasestorage.app/o/posts%2FjknqVcFEmdMMIF16ikxPqNI7NC62%2FScreenshot%202025-11-13%20144125.png?alt=media&token=144819f4-91b4-40cf-9d97-09cbbb9ec2a6")
+                }
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                }}
+              />
+            </div>
+
+            {/* Song Title */}
+            <h5
+              style={{
+                color: "#fff",
+                marginBottom: "8px",
+                fontSize: "16px",
+                fontWeight: "bold",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {song.title}
+            </h5>
+          </div>
+        ))}
+      </div>
+
+      {/* Custom CSS for dropdown hover effects */}
+      <style>{`
+        .dropdown-toggle-custom::after {
+          display: none !important;
+        }
+        
+        .dropdown-toggle-custom:hover {
+          background-color: rgba(0,0,0,0.8) !important;
+        }
+
+        .dropdown-item-custom:hover {
+          background-color: #404040 !important;
+        }
+
+        .dropdown-item-custom:focus {
+          background-color: #404040 !important;
+        }
+
+        .dropdown-item-custom:active {
+          background-color: #404040 !important;
+        }
+      `}</style>
+
+      {/* Bootstrap Icons */}
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+      />
+
+      {/*<h2 style={{ marginBottom: "24px" }}>Explore Music</h2>
       <div
         style={{
           display: "grid",
@@ -412,9 +664,7 @@ const Posts = () => {
             >
               {song.title}
             </h5>
-            <p style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}>
-              {song.description}
-            </p>
+
 
             <button
               className="mx-2"
@@ -452,7 +702,12 @@ const Posts = () => {
           </div>
         ))}
       </div>
+*/}
 
+      {/*description */}
+      {/*<p style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}>
+              {song.description}
+            </p>*/}
       {/*  <div className="">
     
 {posts.length > 0 ? (

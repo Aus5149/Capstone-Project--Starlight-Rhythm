@@ -50,11 +50,12 @@ const Navbar = () => {
             boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
           }}
         >
-          <div
+          {/**<div
             style={{ fontSize: "24px", fontWeight: "bold", color: "#1DB954" }}
           >
             <span style={{ fontSize: "28px" }}></span> Starlight Rhythm
           </div>
+          
           {/* Menu Button */}
           <Button
             variant="link"
@@ -104,7 +105,7 @@ const Navbar = () => {
               style={{ borderBottom: "1px solid #282828" }}
             >
               <Offcanvas.Title style={{ color: "#1DB954", fontWeight: "bold" }}>
-                <span style={{ fontSize: "24px" }}>🎵</span> Menu
+                <span style={{ fontSize: "24px" }}>🎵</span> Starlight Rhythm
               </Offcanvas.Title>
             </Offcanvas.Header>
 

@@ -94,7 +94,7 @@ const ProfilePage = () => {
     auth.signOut();
     navigate("/login");
   };
-
+  console.log(songs);
   useEffect(() => {
     if (authLoading) return;
     if (!currentUser) {
@@ -205,7 +205,7 @@ const ProfilePage = () => {
               style={{ borderBottom: "1px solid #282828" }}
             >
               <Offcanvas.Title style={{ color: "#1DB954", fontWeight: "bold" }}>
-                <span style={{ fontSize: "24px" }}>🎵</span> Menu
+                <span style={{ fontSize: "24px" }}>🎵</span> Starlight Rhythm
               </Offcanvas.Title>
             </Offcanvas.Header>
 
@@ -321,10 +321,21 @@ const ProfilePage = () => {
           }}
         >
           {isLoading ? (
-            "Loading Songs"
+            <div className="text-center" style={{ fontSize: "100px" }}>
+              Loading songs...
+            </div>
           ) : (
             <Container>
               <Row className="mx-2 row row-cols-1">
+                {!songs.length ? (
+                  <div className="text-center" style={{ fontSize: "50px" }}>
+                    Type the search bar to find songs
+                  </div>
+                ) : (
+                  <div className="text-center" style={{ fontSize: "50px" }}>
+                    Result
+                  </div>
+                )}
                 {songs.map((song) => {
                   console.log(song);
                   return (
@@ -529,7 +540,10 @@ const ProfilePage = () => {
                     fontSize: "24px",
                   }}
                 >
-                  ⏮
+                  <i
+                    className="bi bi-skip-backward me-3"
+                    style={{ fontSize: "20px" }}
+                  ></i>
                 </button>
                 <button
                   style={{
@@ -545,7 +559,10 @@ const ProfilePage = () => {
                     justifyContent: "center",
                   }}
                 >
-                  ▶
+                  <i
+                    className="bi bi-play-fill"
+                    style={{ fontSize: "20px" }}
+                  ></i>
                 </button>
                 <button
                   style={{
@@ -556,7 +573,10 @@ const ProfilePage = () => {
                     fontSize: "24px",
                   }}
                 >
-                  ⏭
+                  <i
+                    className="bi bi-skip-forward ms-3"
+                    style={{ fontSize: "20px" }}
+                  ></i>
                 </button>
               </div>
             </div>
@@ -637,7 +657,10 @@ const ProfilePage = () => {
                       fontSize: "20px",
                     }}
                   >
-                    ⏮
+                    <i
+                      className="bi bi-skip-backward me-3"
+                      style={{ fontSize: "20px" }}
+                    ></i>
                   </button>
                   <button
                     style={{
@@ -650,7 +673,10 @@ const ProfilePage = () => {
                       fontSize: "16px",
                     }}
                   >
-                    ▶
+                    <i
+                      className="bi bi-play-fill"
+                      style={{ fontSize: "20px" }}
+                    ></i>
                   </button>
                   <button
                     style={{
@@ -661,7 +687,10 @@ const ProfilePage = () => {
                       fontSize: "20px",
                     }}
                   >
-                    ⏭
+                    <i
+                      className="bi bi-skip-forward ms-3"
+                      style={{ fontSize: "20px" }}
+                    ></i>
                   </button>
                 </div>
                 <div

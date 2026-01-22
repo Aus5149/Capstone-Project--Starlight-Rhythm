@@ -43,8 +43,7 @@ const Posts = () => {
   //     return data.id
   //    }
 
-  const API_URL =
-    "https://2024be56-7c75-4898-bba3-bb654ca8b38a-00-iglx0rrqz7e8.sisko.replit.dev";
+  const API_URL = "https://vercel-express-api-capstone.vercel.app";
 
   async function fetchPosts() {
     const userId = currentUser.uid;

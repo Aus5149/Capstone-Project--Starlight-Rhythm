@@ -3,6 +3,7 @@ import { storage } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { AuthContext } from "../context/authContext";
+import "bootstrap/dist/css/bootstrap.min.css";
 import {
   Container,
   Row,
@@ -30,20 +31,6 @@ const Posts = () => {
 
   // New state for managing dropdown
   const [openDropdownId, setOpenDropdownId] = useState(null);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (openDropdownId !== null) {
-        setOpenDropdownId(null);
-      }
-    };
-
-    if (openDropdownId !== null) {
-      document.addEventListener("click", handleClickOutside);
-      return () => document.removeEventListener("click", handleClickOutside);
-    }
-  }, [openDropdownId]);
 
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
@@ -381,194 +368,213 @@ const Posts = () => {
       </Modal>
 
       <h2 style={{ marginBottom: "24px" }}>Explore Music</h2>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(165px, 1fr))",
-          gap: "24px",
-        }}
-      >
-        {posts.map((song, index) => (
-          <div
-            key={song.id || index} // Use song.id if available
-            style={{
-              backgroundColor: "#282828",
-              borderRadius: "8px",
-              padding: "16px",
-              cursor: "pointer",
-              transition: "transform 0.2s, background-color 0.2s",
-              position: "relative",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(1.02)";
-              e.currentTarget.style.backgroundColor = "#333";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.backgroundColor = "#282828";
-            }}
-          >
-            {/* Three Dots Dropdown Menu - Bootstrap Version */}
-            <Dropdown
-              show={openDropdownId === (song.id || index)}
-              onToggle={(isOpen) => {
-                setOpenDropdownId(isOpen ? song.id || index : null);
-              }}
-              drop="down"
-              align="end"
-            >
-              <Dropdown.Toggle
-                as="button"
-                className="dropdown-toggle-custom"
-                style={{
-                  position: "absolute",
-                  top: "12px",
-                  right: "12px",
-                  zIndex: 10,
-                  color: "#b3b3b3",
-                  padding: "6px 10px",
-                  fontSize: "20px",
-                  backgroundColor: "rgba(0,0,0,0.6)",
-                  borderRadius: "50%",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <i className="bi bi-three-dots-vertical"></i>
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu
-                style={{
-                  backgroundColor: "#282828",
-                  border: "1px solid #404040",
-                  borderRadius: "8px",
-                  minWidth: "180px",
-                  padding: "8px 0",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
-                }}
-              >
-                {/* Update Image */}
-                <Dropdown.Item
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setUpdatePlaylist(song);
-                    setFile(song.image);
-                    setShowEditImageModal(true);
-                    setOpenDropdownId(null);
-                  }}
-                  style={{
-                    color: "#fff",
-                    padding: "10px 16px",
-                    fontSize: "14px",
-                  }}
-                  className="dropdown-item-custom"
-                >
-                  <i className="bi bi-image me-2"></i>
-                  Update Image
-                </Dropdown.Item>
-
-                {/* Update */}
-                <Dropdown.Item
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setDescription(song.description);
-                    setTitle(song.title);
-                    setUpdatePlaylist(song);
-                    setShowEditModal(true);
-                    setOpenDropdownId(null);
-                  }}
-                  style={{
-                    color: "#fff",
-                    padding: "10px 16px",
-                    fontSize: "14px",
-                  }}
-                  className="dropdown-item-custom"
-                >
-                  <i className="bi bi-pencil-square me-2"></i>
-                  Update
-                </Dropdown.Item>
-
-                <Dropdown.Divider
-                  style={{ borderColor: "#404040", margin: "8px 0" }}
-                />
-
-                {/* Delete */}
-                <Dropdown.Item
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    DeleteBook(song.id);
-                    setOpenDropdownId(null);
-                  }}
-                  style={{
-                    color: "#ff4444",
-                    padding: "10px 16px",
-                    fontSize: "14px",
-                  }}
-                  className="dropdown-item-custom"
-                >
-                  <i className="bi bi-trash me-2"></i>
-                  Delete
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-
-            {/* Album Image */}
+      <Container>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(165px, 1fr))",
+            gap: "24px",
+          }}
+        >
+          {posts.map((song, index) => (
             <div
+              key={song.id || index} // Use song.id if available
               style={{
-                minHeight: "150px",
-                maxHeight: "200px",
-                minWidth: "90px",
-                backgroundColor: "#404040",
+                backgroundColor: "#282828",
                 borderRadius: "8px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "60px",
-                marginBottom: "16px",
-                overflow: "hidden",
+                padding: "16px",
+                cursor: "pointer",
+                transition: "transform 0.2s, background-color 0.2s",
+                position: "relative",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "scale(1.02)";
+                e.currentTarget.style.backgroundColor = "#333";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "scale(1)";
+                e.currentTarget.style.backgroundColor = "#282828";
               }}
             >
-              <Image
-                src={
-                  song.image ||
-                  "https://firebasestorage.googleapis.com/v0/b/sample-firebase-ai-app-fdc98.firebasestorage.app/o/posts%2FjknqVcFEmdMMIF16ikxPqNI7NC62%2FScreenshot%202025-11-13%20144125.png?alt=media&token=144819f4-91b4-40cf-9d97-09cbbb9ec2a6"
+              {/* Three Dots Dropdown Menu - Bootstrap Version */}
+              <Dropdown
+                show={openDropdownId === song.id}
+                onToggle={(isOpen) =>
+                  setOpenDropdownId(isOpen ? song.id : null)
                 }
-                onError={(e) =>
-                  (e.target.src =
-                    "https://firebasestorage.googleapis.com/v0/b/sample-firebase-ai-app-fdc98.firebasestorage.app/o/posts%2FjknqVcFEmdMMIF16ikxPqNI7NC62%2FScreenshot%202025-11-13%20144125.png?alt=media&token=144819f4-91b4-40cf-9d97-09cbbb9ec2a6")
-                }
+                align="end"
+              >
+                <Dropdown.Toggle
+                  as="button"
+                  className="dropdown-toggle-custom"
+                  style={{
+                    position: "absolute",
+                    top: "12px",
+                    right: "12px",
+                    zIndex: 10,
+                    color: "#b3b3b3",
+                    padding: "6px 10px",
+                    fontSize: "20px",
+                    backgroundColor: "rgba(0,0,0,0.6)",
+                    borderRadius: "50%",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  <i className="bi bi-three-dots-vertical" />
+                </Dropdown.Toggle>
+                <Dropdown.Menu
+                  container="body"
+                  popperConfig={{
+                    modifiers: [
+                      {
+                        name: "preventOverflow",
+                        options: {
+                          boundary: "viewport",
+                          padding: 8,
+                        },
+                      },
+                      {
+                        name: "flip",
+                        options: {
+                          fallbackPlacements: [
+                            "bottom-start",
+                            "top-end",
+                            "top-start",
+                          ],
+                        },
+                      },
+                    ],
+                  }}
+                  style={{
+                    backgroundColor: "#282828",
+                    border: "1px solid #404040",
+                    borderRadius: "8px",
+                    minWidth: "120px",
+                    padding: "8px 0",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
+                    zIndex: 9999,
+                  }}
+                >
+                  {/* Update Image */}
+                  <Dropdown.Item
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setUpdatePlaylist(song);
+                      setFile(song.image);
+                      setShowEditImageModal(true);
+                      setOpenDropdownId(null);
+                    }}
+                    style={{
+                      color: "#fff",
+                      padding: "10px 16px",
+                      fontSize: "14px",
+                    }}
+                    className="dropdown-item-custom"
+                  >
+                    <i className="bi bi-image me-2"></i>
+                    Update Image
+                  </Dropdown.Item>
+
+                  {/* Update */}
+                  <Dropdown.Item
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDescription(song.description);
+                      setTitle(song.title);
+                      setUpdatePlaylist(song);
+                      setShowEditModal(true);
+                      setOpenDropdownId(null);
+                    }}
+                    style={{
+                      color: "#fff",
+                      padding: "10px 16px",
+                      fontSize: "14px",
+                    }}
+                    className="dropdown-item-custom"
+                  >
+                    <i className="bi bi-pencil-square me-2"></i>
+                    Update Playlist
+                  </Dropdown.Item>
+
+                  <Dropdown.Divider
+                    style={{ borderColor: "#404040", margin: "8px 0" }}
+                  />
+
+                  {/* Delete */}
+                  <Dropdown.Item
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      DeleteBook(song.id);
+                      setOpenDropdownId(null);
+                    }}
+                    style={{
+                      color: "#ff4444",
+                      padding: "10px 16px",
+                      fontSize: "14px",
+                    }}
+                    className="dropdown-item-custom"
+                  >
+                    <i className="bi bi-trash me-2"></i>
+                    Delete
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+
+              {/* Album Image */}
+              <div
                 style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
+                  minHeight: "150px",
+                  maxHeight: "200px",
+                  minWidth: "90px",
+                  backgroundColor: "#404040",
                   borderRadius: "8px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "60px",
+                  marginBottom: "16px",
+                  overflow: "hidden",
                 }}
-              />
+              >
+                <Image
+                  src={
+                    song.image ||
+                    "https://firebasestorage.googleapis.com/v0/b/sample-firebase-ai-app-fdc98.firebasestorage.app/o/posts%2FjknqVcFEmdMMIF16ikxPqNI7NC62%2FScreenshot%202025-11-13%20144125.png?alt=media&token=144819f4-91b4-40cf-9d97-09cbbb9ec2a6"
+                  }
+                  onError={(e) =>
+                    (e.target.src =
+                      "https://firebasestorage.googleapis.com/v0/b/sample-firebase-ai-app-fdc98.firebasestorage.app/o/posts%2FjknqVcFEmdMMIF16ikxPqNI7NC62%2FScreenshot%202025-11-13%20144125.png?alt=media&token=144819f4-91b4-40cf-9d97-09cbbb9ec2a6")
+                  }
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                  }}
+                />
+              </div>
+
+              {/* Song Title */}
+              <h5
+                style={{
+                  color: "#fff",
+                  marginBottom: "8px",
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {song.title}
+              </h5>
             </div>
+          ))}
+        </div>
 
-            {/* Song Title */}
-            <h5
-              style={{
-                color: "#fff",
-                marginBottom: "8px",
-                fontSize: "16px",
-                fontWeight: "bold",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {song.title}
-            </h5>
-          </div>
-        ))}
-      </div>
-
-      {/* Custom CSS for dropdown hover effects */}
-      <style>{`
+        {/* Custom CSS for dropdown hover effects */}
+        <style>{`
         .dropdown-toggle-custom::after {
           display: none !important;
         }
@@ -589,6 +595,7 @@ const Posts = () => {
           background-color: #404040 !important;
         }
       `}</style>
+      </Container>
 
       {/* Bootstrap Icons */}
       <link

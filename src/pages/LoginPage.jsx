@@ -46,8 +46,9 @@ const LoginPage = () => {
 
   // Sample background images - you can replace these with your own
   const backgrounds = [
-    "linear-gradient(135deg, #004316ff 0%, #075500ff 100%)",
+    "linear-gradient(135deg, #d85963ff 0%, #cd0030ff 100%)",
     "linear-gradient(135deg, #fa709a 0%, #320023ff 100%)",
+    "linear-gradient(135deg, #430000ff 0%, #58000cff 100%)",
     `url('${Background1}')`,
     'url("src/images/mock.png")',
     "linear-gradient(135deg, #430000ff 0%, #58000cff 100%)",

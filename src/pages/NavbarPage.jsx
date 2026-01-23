@@ -13,6 +13,7 @@ import {
 import { getAuth } from "firebase/auth";
 import { useState } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
+import bbbImage from "../images/StarlightRhythm.webp";
 const Navbar = () => {
   const auth = getAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -107,8 +108,23 @@ const Navbar = () => {
               closeVariant="white"
               style={{ borderBottom: "1px solid #282828" }}
             >
-              <Offcanvas.Title style={{ color: "#1DB954", fontWeight: "bold" }}>
-                <span style={{ fontSize: "24px" }}>🎵</span> Starlight Rhythm
+              <Offcanvas.Title
+                style={{ color: "#da007cff", fontWeight: "bold" }}
+              >
+                <span style={{ fontSize: "24px" }}>
+                  <Image
+                    src={bbbImage}
+                    rounded
+                    className="me-2 me-md-3 flex-shrink-0"
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      objectFit: "cover",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </span>{" "}
+                Starlight Rhythm
               </Offcanvas.Title>
             </Offcanvas.Header>
 
@@ -207,7 +223,7 @@ const Navbar = () => {
                   color: "#b3b3b3",
                 }}
               >
-                <p className="mb-0">© 2024 Spotify Clone</p>
+                <p className="mb-0">© Starred</p>
               </div>
             </Offcanvas.Body>
           </Offcanvas>

@@ -181,7 +181,9 @@ const Posts = () => {
   return (
     <>
       <div className="d-flex align-items-center gap-3 py-2">
-        <h3 className="mb-0">Your Playlists</h3>
+        <h3 className="mb-0" style={{ color: "#7a172dff" }}>
+          Your Playlists
+        </h3>
         <Button
           className="rounded-pill"
           variant="outline-light"
@@ -375,7 +377,6 @@ const Posts = () => {
         </Modal.Footer>
       </Modal>
 
-      <h2 style={{ marginBottom: "24px" }}>Explore Music</h2>
       <Container>
         <div
           style={{
